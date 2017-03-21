@@ -1,5 +1,5 @@
 #############################################################################
-######MAIN######
+######MAIN SECTION######
 #############################################################################
 
 library("xlsx")
@@ -31,11 +31,12 @@ for (i in 1:size) {
 }
 
 test <- c[-c(1,2)]
-myLoads <- test[!test$HOUR == 25, ]
-rm("test", "df")
+myLoadsCrudeForm <- test[!test$HOUR == 25, ]
+rm("test", "df", "c")
 
 
 cat("elapsed time in minutes: ", (proc.time()[3] - startTime) / 60)
+#elapsed time in minutes:  10.29517
 
 
 #############################################################################
