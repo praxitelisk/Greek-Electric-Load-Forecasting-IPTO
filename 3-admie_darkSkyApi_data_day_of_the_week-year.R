@@ -35,7 +35,15 @@ darkSky.HistoricalData =  add_column(darkSky.HistoricalData, sine.day.of.year, .
 darkSky.HistoricalData =  add_column(darkSky.HistoricalData, cosine.day.of.year, .after = "sine.day.of.year")
 
 #remove auxiliary variables
-rm(day.of.year,day.of.week,cosine.day.of.week,cosine.day.of.year,sine.day.of.week,sine.day.of.year)
+rm(
+  day.of.year,
+  day.of.week,
+  cosine.day.of.week,
+  cosine.day.of.year,
+  sine.day.of.week,
+  sine.day.of.year,
+  weekday
+)
 
 
 
