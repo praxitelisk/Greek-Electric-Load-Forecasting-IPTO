@@ -32,7 +32,7 @@ for (i in 1:size) {
 
 test <- c[-c(1,2)]
 myLoadsCrudeForm <- test[!test$HOUR == 25, ]
-rm("test", "df", "c")
+rm("test", "df", "c", size, i)
 
 
 cat("elapsed time in minutes: ", (proc.time()[3] - startTime) / 60)
