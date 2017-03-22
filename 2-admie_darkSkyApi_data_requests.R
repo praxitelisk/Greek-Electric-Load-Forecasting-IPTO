@@ -72,7 +72,7 @@ for ( i in seq_along(days) ) {
 
 
 #remove all auxilary variables
-rm(temp.athens, temp.thess, temp, test, day)
+rm(temp.athens, temp.thess, temp, test, day, days)
 
 cat("elapsed time in minutes: ", (proc.time()[3]-startTime)/60)
 
