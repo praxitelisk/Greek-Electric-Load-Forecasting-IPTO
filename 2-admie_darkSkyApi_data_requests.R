@@ -14,7 +14,7 @@ temp.thess <- list()
 temp.athens <- list()
 
 
-days <- seq(from=as.Date('2016-10-07'), to=as.Date("2016-11-30"),by='days' )
+days <- seq(from=as.Date('2010-10-01'), to=as.Date("2011-10-02"),by='days' )
 
 for ( i in seq_along(days) ) {
 
