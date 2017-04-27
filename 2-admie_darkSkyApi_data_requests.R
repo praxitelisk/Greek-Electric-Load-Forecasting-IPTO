@@ -14,6 +14,8 @@ temp.thess <- list()
 temp.athens <- list()
 
 
+#change the date sequence in order to follow darksKy API limitations 1000
+#calls per account
 days <- seq(from=as.Date('2010-10-01'), to=as.Date("2011-10-02"),by='days' )
 
 for ( i in seq_along(days) ) {
