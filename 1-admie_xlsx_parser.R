@@ -32,6 +32,8 @@ for (i in 1:size) {
 
 test <- c[-c(1,2)]
 myLoadsCrudeForm <- test[!test$HOUR == 25, ]
+myLoadsCrudeForm =  myLoadsCrudeForm[complete.cases(myLoadsCrudeForm),]
+loadsBackUp = myLoadsCrudeForm
 rm("test", "df", "c", size, i)
 
 
