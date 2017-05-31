@@ -1,6 +1,5 @@
 ######MAIN SECTION######
 
-
 library("xlsx")
 
 # rm(list = ls())
@@ -38,6 +37,3 @@ rm("test", "df", size, i)
 
 cat("elapsed time in minutes: ", (proc.time()[3] - startTime) / 60)
 #elapsed time in minutes:  4.295167
-
-
-######FUNCTION SECTION######
