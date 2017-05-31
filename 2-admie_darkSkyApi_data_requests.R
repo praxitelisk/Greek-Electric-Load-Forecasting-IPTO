@@ -1,8 +1,8 @@
 library("darksky")
 library("tibble")
 
-if (!exists("darkSky.HistoricalData")) {
-  darkSky.HistoricalData <- list()
+if (!exists("darkSky.WeatherData")) {
+  darkSky.WeatherData <- list()
 }
 
 startTime <- proc.time()[3]
@@ -16,7 +16,7 @@ temp.athens <- list()
 
 #change the date sequence in order to follow darksKy API limitations 1000
 #calls per account
-days <- seq(from=as.Date('2010-10-01'), to=as.Date("2011-10-02"),by='days' )
+days <- seq(from=as.Date('2016-10-07'), to=as.Date("2017-10-07"),by='days' )
 
 for ( i in seq_along(days) ) {
 
@@ -62,20 +62,23 @@ for ( i in seq_along(days) ) {
   colnames(test)[1] = "weekday"
   
   #concat it in the main data frame table
-  darkSky.HistoricalData <- rbind(darkSky.HistoricalData, test)
+  darkSky.WeatherData <- rbind(darkSky.WeatherData, test)
   
 
 }
 
 #get names of all the weekdays
-#test = cbind(weekdays(darkSky.HistoricalData$time), darkSky.HistoricalData)
+#test = cbind(weekdays(darkSky.WeatherData$time), darkSky.WeatherData)
 #colnames(test)[1] = "weekday"
-#darkSky.HistoricalData = test
+#darkSky.WeatherData = test
 
 
 #remove all auxilary variables
 rm(temp.athens, temp.thess, temp, test, day, days)
 
+#create a backup
+backUp.DarkSky = darkSky.WeatherData
+
 cat("elapsed time in minutes: ", (proc.time()[3]-startTime)/60)
 
-#latest elapsed time in seconds:  280.89
+#elapsed time in minutes:  6.226167

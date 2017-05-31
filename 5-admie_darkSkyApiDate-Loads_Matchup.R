@@ -6,21 +6,21 @@
 library(tibble) #for add_column command
 
 
-time = paste(myLoadsCrudeForm$DATE," ",myLoadsCrudeForm$HOUR,":00", sep="", collapse = NULL)
+time = paste(myLoads$DATE," ",myLoads$HOUR,":00", sep="", collapse = NULL)
 time = strptime(time, format="%Y-%m-%d %H:%M")
 time = as.POSIXct(time)
 
 #an auxilliary variable taken from darkSkyAPI in order to check if
 #previous time variable is made correctly.
-darkSkyTime = darkSky.HistoricalData$time
+darkSkyTime = darkSky.WeatherData$time
 
 
 #add time column to loads data frame.
-myLoadsCrudeForm = add_column(myLoadsCrudeForm, time, .after = "HOUR")
+myLoads = add_column(myLoads, time, .after = "HOUR")
 
 
 #renaming the long load columns into a shorter one
-names(myLoadsCrudeForm)[4] <- "Loads"
+names(myLoads)[4] <- "Loads"
 
 
 #check it if works

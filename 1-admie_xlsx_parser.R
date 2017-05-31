@@ -22,23 +22,23 @@ xlsFiles <-
 
 
 size <- length(xlsFiles)
-c <- vector(mode = "numeric", length = 0)
+test <- vector()
 for (i in 1:size) {
   df <- read.xlsx(xlsFiles[i], sheetIndex = 1, colIndex = (1:5))
   
-  c <- rbind(c, df)
+  test <- rbind(test, df)
   
 }
 
-test <- c[-c(1,2)]
-myLoadsCrudeForm <- test[!test$HOUR == 25, ]
-myLoadsCrudeForm =  myLoadsCrudeForm[complete.cases(myLoadsCrudeForm),]
-loadsBackUp = myLoadsCrudeForm
-rm("test", "df", "c", size, i)
+test <- test[-c(1,2)]
+myLoads <- test[!test$HOUR == 25, ]
+myLoads =  myLoads[complete.cases(myLoads),]
+BackUp.Loads = myLoads
+rm("test", "df", size, i)
 
 
 cat("elapsed time in minutes: ", (proc.time()[3] - startTime) / 60)
-#elapsed time in minutes:  10.29517
+#elapsed time in minutes:  4.295167
 
 
 #############################################################################

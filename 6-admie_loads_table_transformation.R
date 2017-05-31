@@ -1,10 +1,10 @@
-rm(combined, finalDataFrame)
+rm(combined, finalDataFrame, final.Date.Frame)
 
 startTime <- proc.time()[3]
 
 ######a small preprocess######
 #merge the weather data and the Loads based on the common date entry
-darkSky.N.Loads.Combined = merge(darkSky.HistoricalData, myLoads, by="time", all.y = TRUE)
+darkSky.N.Loads.Combined = merge(darkSky.WeatherData, myLoads, by="time", all.y = TRUE)
 
 #remove NA values from merge
 darkSky.N.Loads.Combined =  subset(darkSky.N.Loads.Combined, !is.na(darkSky.N.Loads.Combined$weekday))
@@ -105,6 +105,36 @@ for (i in seq(1, dim(darkSky.N.Loads.Combined)[1], by = 24)) {
   
   
 } #end of for - iterator
+
+#####changing to date the time column#####
+dates = as.Date(finalDataFrame$time)
+dates = as.data.frame(dates)
+finalDataFrame$time = dates
+rm(dates)
+
+#####adding the yesterday and the day before yesterday columns#####
+for (i in seq(3, dim(finalDataFrame)[1])) {
+ 
+  the.day.before.yesterday = finalDataFrame[i-2, ]
+  colnames(the.day.before.yesterday) <- paste("the.day.before.yesterday", colnames(the.day.before.yesterday), sep=".")
+  
+  yesterday = finalDataFrame[i-1, ]
+  colnames(yesterday) <- paste("yesterday", colnames(yesterday), sep=".")
+  
+  today = finalDataFrame[i, ]
+  
+  final.row = cbind(today, yesterday)
+  final.row = cbind(final.row, the.day.before.yesterday)
+  
+  if (!exists("final.Data.Frame")) {
+    final.Data.Frame = final.row
+  }
+  else {
+    final.Data.Frame = rbind(final.Data.Frame, final.row)
+    rm(final.row, the.day.before.yesterday, yesterday, today)
+  }
+  
+} #end of for
 
 
 #naming the columns
