@@ -14,8 +14,8 @@ temp.thess <- list()
 temp.athens <- list()
 
 
-#change the date sequence in order to follow darksKy API limitations 1000
-#calls per account
+###change the date sequence in order to follow darksKy API limitations 1000
+#calls per account###
 days <- seq(from=as.Date('2016-10-07'), to=as.Date("2017-10-07"),by='days' )
 
 for ( i in seq_along(days) ) {
@@ -73,10 +73,10 @@ for ( i in seq_along(days) ) {
 #darkSky.WeatherData = test
 
 
-#remove all auxilary variables
+###remove all auxilary variables###
 rm(temp.athens, temp.thess, temp, test, day, days)
 
-#create a backup
+###create a backup###
 backUp.DarkSky = darkSky.WeatherData
 
 cat("elapsed time in minutes: ", (proc.time()[3]-startTime)/60)

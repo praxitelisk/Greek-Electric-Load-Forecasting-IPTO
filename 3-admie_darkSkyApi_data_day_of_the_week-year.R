@@ -1,3 +1,7 @@
+#this code snippet adds the day of the week and the relative position of each
+#day on the year and on the weekday using sine and cosine functions
+
+
 library(tibble) #for add_column command
 library(lubridate) # for yday command
 
