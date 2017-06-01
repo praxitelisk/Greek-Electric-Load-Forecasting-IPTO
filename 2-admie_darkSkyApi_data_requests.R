@@ -1,3 +1,5 @@
+# This code snippet starts downloading data from DarkSky API ---------------------------------
+
 library("darksky")
 library("tibble")
 
