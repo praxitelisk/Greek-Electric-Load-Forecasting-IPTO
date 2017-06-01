@@ -48,10 +48,3 @@ rm(
   sine.day.of.year,
   weekday
 )
-
-
-
-
-
-
-

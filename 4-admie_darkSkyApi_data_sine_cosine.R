@@ -1,3 +1,7 @@
+#this code snippet converts the wind bearing using the sine and cosine 
+#functions, this helps to traslate the wind bearing onto the trigonometric circle
+
+
 library(tibble) #for add_column command
 
 #create cosine and sine columns for wind bearing
