@@ -432,7 +432,7 @@ for (i in seq(3, dim(finalDataFrame)[1])) {
 
 
 #remove redundant information - columns here
-
+rm(i)
 
 cat("elapsed time in minutes: ", (proc.time()[3]-startTime)/60)
 #elapsed time in minutes:  6.599
