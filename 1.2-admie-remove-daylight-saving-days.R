@@ -4,20 +4,23 @@
 
 temp = myLoads
 
-OctoberToBeRemoved = which((myLoads$HOUR == 25 & myLoads$Loads!=0))
+OctoberToBeRemoved = which((temp$HOUR == 25 & temp$Loads!=0))
+datesToBeRemoved = temp$DATE[OctoberToBeRemoved]
 
-for(i in 1:length(OctoberToBeRemoved)) {
-  dateToBeRemoved = temp$DATE[OctoberToBeRemoved[i]]
-  temp = temp[!temp$DATE == dateToBeRemoved, ]
+for(i in 1:length(datesToBeRemoved)) {
+  print(datesToBeRemoved[i])
+  temp = temp[!temp$DATE == datesToBeRemoved[i], ]
 }
 
 
 #remove the March's last Sunday-------------
 
-MarchToBeRemoved = which((myLoads$HOUR == 24 & myLoads$Loads==0))
-for(i in 1:length(MarchToBeRemoved)) {
-  dateToBeRemoved = temp$DATE[MarchToBeRemoved[i]]
-  temp = temp[!temp$DATE == dateToBeRemoved, ]
+MarchToBeRemoved = which((temp$HOUR == 24 & temp$Loads==0))
+datesToBeRemoved = temp$DATE[MarchToBeRemoved]
+
+for(i in 1:length(datesToBeRemoved)) {
+  print(datesToBeRemoved[i])
+  temp = temp[!temp$DATE == datesToBeRemoved[i], ]
 }
 
 
@@ -27,4 +30,7 @@ temp <- temp[!temp$HOUR == 25, ]
 
 #renewing the myLoads data frame-------------
 myLoads = temp
-rm(temp, dateToBeRemoved, i, j, MarchToBeRemoved, OctoberToBeRemoved)
+#rm(temp, dateToBeRemoved, i, MarchToBeRemoved, OctoberToBeRemoved)
+
+#re-indexing
+row.names(myLoads) <- 1:nrow(myLoads)
