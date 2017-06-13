@@ -25,12 +25,14 @@ for (i in 1:size) {
   df <- read.xlsx(xlsFiles[i], sheetIndex = 1, colIndex = (1:5))
   
   test <- rbind(test, df)
-  
 }
 
 test <- test[-c(1,2)]
-myLoads <- test[!test$HOUR == 25, ]
-myLoads =  myLoads[complete.cases(myLoads),]
+myLoads = test
+#myLoads <- test[!test$HOUR == 25, ]
+##myLoads =  myLoads[complete.cases(myLoads),]
+
+names(myLoads)[3] <- "Loads"
 BackUp.Loads = myLoads
 rm("test", "df", size, i)
 
