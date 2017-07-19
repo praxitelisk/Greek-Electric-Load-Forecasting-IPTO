@@ -33,7 +33,7 @@ myLoads = test
 ##myLoads =  myLoads[complete.cases(myLoads),]
 
 names(myLoads)[3] <- "Loads"
-BackUp.Loads = myLoads
+backUp.Loads = myLoads
 rm("test", "df", size, i)
 
 
