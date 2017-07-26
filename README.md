@@ -12,4 +12,5 @@ Greek Electric Load Forecasting using R, RStudio and RShiny
   <li>Random Forest library: install.package("RandomForest")</li>
   <li>Neural Network library: install.package("nnet")</li>
   <li>K' Nearest Neighbors library: install.package("FNN")</li>
+  <li>Rule Based Models library: install.package("Cubist")</li>
 </ul>
