@@ -5,7 +5,7 @@ Greek Electric Load Forecasting using R, RStudio and RShiny
 <ul>
   <li>xlsx package: install.packages('xlsx')</li>
   <li>Dark Sky API install: install.packages("darksky") | site: https://github.com/hrbrmstr/darksky</li>
-  <li>lubricate package: install.packages('lubricate')</li>
+  <li>lubridate package: install.packages('lubricate')</li>
   <li>Tibble package: install.packages("tibble")</li>
   <li>Feature Selection library: install.package("Boruta")</li>
   <li>SVM library: install.package("e1071")</li>
