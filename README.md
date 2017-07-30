@@ -2,7 +2,7 @@
 Greek Electric Load Forecasting using R, RStudio and RShiny using daily load datasets provided by the Greek Independent Power Transmission Operator (IPTO) - (AΔΜΙΕ in greek)
 http://www.admie.gr/nc/en/home/
 
-<b>Dependencies</b>
+<b>libraries - Dependencies</b>
 <ul>
   <li>xlsx package: install.packages('xlsx')</li>
   <li>Dark Sky API install: install.packages("darksky") | site: https://github.com/hrbrmstr/darksky</li>
