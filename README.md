@@ -5,7 +5,7 @@ http://www.admie.gr/nc/en/home/
 <b>libraries - Dependencies</b>
 <ul>
   <li>xlsx package: install.packages('xlsx')</li>
-  <li>Dark Sky API install: install.packages("darksky") | site: https://github.com/hrbrmstr/darksky</li>
+  <li>JSONLite package: install.packages("jsonlite")</li>
   <li>lubridate package: install.packages('lubridate')</li>
   <li>Tibble package: install.packages("tibble")</li>
   <li>Feature Selection library: install.package("Boruta")</li>
