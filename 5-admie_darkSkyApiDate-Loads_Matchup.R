@@ -6,7 +6,7 @@ library(tibble) #for add_column command
 
 time = paste(myLoads$DATE," ",myLoads$HOUR,":00", sep="", collapse = NULL)
 #time = strptime(time, format="%Y-%m-%d %H:%M")
-time = as.POSIXct(time, format="%Y-%m-%d %H:%M", tz="Europe/Athens")
+time = as.POSIXct(time, format="%Y-%m-%d %H:%M", tz = Sys.timezone())
 
 #an auxilliary variable taken from darkSkyAPI in order to check if
 #previous time variable is made correctly.
@@ -17,11 +17,7 @@ time = as.POSIXct(time, format="%Y-%m-%d %H:%M", tz="Europe/Athens")
 myLoads = add_column(myLoads, time, .after = "HOUR")
 
 
-#renaming the long load columns into a shorter one
-#names(myLoads)[4] <- "Loads"
-
-
 #check it if works
 #darkSkyTime[2] == time[1]
 
-rm(time,darkSkyTime)
+rm(time)

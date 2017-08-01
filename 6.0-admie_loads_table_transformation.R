@@ -5,8 +5,22 @@ rm(temp.row, temp, finalDataFrame, combinedWeather, combinedLoads, final.Data.Se
 
 #a small preprocess######
 #merge the weather data and the Loads based on the common date entry
+cat("#a small preprocess######\n")
 darkSky.N.Loads.Combined = 
   merge(darkSky.WeatherData, myLoads, by="time", all.y = TRUE)
+
+
+#resolving March's daylight saving (March's last Sunday) 23 hour day issue####
+cat("#resolving March's daylight saving (March's last Sunday) 23 hour day issue####\n")
+is.zero.list = which(darkSky.N.Loads.Combined$Loads == 0)
+
+for (i in 1:length(is.zero.list)) {
+  
+  darkSky.N.Loads.Combined$Loads[is.zero.list[i]] = mean(c(
+    darkSky.N.Loads.Combined$Loads[is.zero.list[i] - 1], 
+    darkSky.N.Loads.Combined$Loads[is.zero.list[i] + 1]))
+  
+}
 
 
 #add some NA values as a data-column to complete 24-hour days that are missing####
@@ -57,6 +71,7 @@ darkSky.N.Loads.Combined =
 
 
 #converting from hourly to daily data.frame####
+cat("convert hourly to daily data.frame####\n")
 for (i in seq(1, dim(darkSky.N.Loads.Combined)[1], by = 24)) {
   
   for(j in 0:23) {
@@ -154,7 +169,8 @@ for(i in 1:length(removeColumn)) {
 backUp.final.Data.Frame = finalDataFrame
 
 
-#adding the d-2 and d-3 previous days#####
+#adding the d-2, d-3 and the day before days#####
+cat("#adding the d-2, d-3 and the day before days#####\n")
 for (i in seq(5, dim(finalDataFrame)[1])) {
   
   ####2 preceding days

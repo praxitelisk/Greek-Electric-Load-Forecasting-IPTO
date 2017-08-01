@@ -7,7 +7,6 @@ library(lubridate) # for yday command
 
 #get the name of each day by name 
 day.of.week = weekdays(darkSky.WeatherData$time)
-weekday = day.of.week
 
 day.of.week[day.of.week=="Κυριακή"]=0
 day.of.week[day.of.week=="Δευτέρα"]=1
@@ -46,6 +45,5 @@ rm(
   cosine.day.of.week,
   cosine.day.of.year,
   sine.day.of.week,
-  sine.day.of.year,
-  weekday
+  sine.day.of.year
 )

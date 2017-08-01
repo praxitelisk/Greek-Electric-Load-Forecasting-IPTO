@@ -36,6 +36,8 @@ names(myLoads)[3] <- "Loads"
 backUp.Loads = myLoads
 rm("test", "df", size, i)
 
+source("1.2-admie-remove-daylight-saving-days.R")
+
 
 cat("elapsed time in minutes: ", (proc.time()[3] - startTime) / 60)
 #elapsed time in minutes:  4.295167

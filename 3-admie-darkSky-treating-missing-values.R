@@ -500,13 +500,19 @@ for (i in 1:length(na.List)) {
 }
 
 
+##thessaloniki uvIndex missing values####
+cat("##thessaloniki uvIndex missing values####\n")
+na.List = which(is.na(darkSky.WeatherData$thessaloniki.uvIndex))
+darkSky.WeatherData$thessaloniki.uvIndex[na.List] = 0
+
+
+##athens uvIndex missing values####
+cat("##athens uvIndex missing values####\n")
+na.List = which(is.na(darkSky.WeatherData$athens.uvIndex))
+darkSky.WeatherData$athens.uvIndex[na.List] = 0
+
 #removing some variables####
 rm(na.List, time1, time2, i)
 
-
-
-
-#keep a backup####
-backUp.DarkSky = darkSky.WeatherData
 
 cat("elapsed time in minutes: ", (proc.time()[3]-startTime)/60)

@@ -22,7 +22,7 @@ darkSky.WeatherData = add_column(darkSky.WeatherData, thessaloniki.windBearing.c
 
 
 #keep a backup
-backUp.DarkSky = darkSky.WeatherData
+#backUp.DarkSky = darkSky.WeatherData
 
 #remove some auxilliary variables####
 rm(athens.windBearing.cosine, thessaloniki.windBearing.cosine, thessaloniki.windBearing.sine, athens.windBearing.sine)
