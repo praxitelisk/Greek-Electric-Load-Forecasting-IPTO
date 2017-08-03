@@ -5,10 +5,10 @@
 library(tibble) #for add_column command
 
 ###create cosine and sine columns for wind bearing####
-athens.windBearing.cosine = cos(darkSky.WeatherData$athens.windBearing)
-athens.windBearing.sine = sin(darkSky.WeatherData$athens.windBearing)
-thessaloniki.windBearing.cosine = cos(darkSky.WeatherData$thessaloniki.windBearing)
-thessaloniki.windBearing.sine = sin(darkSky.WeatherData$thessaloniki.windBearing)
+athens.windBearing.cosine = cos(darkSky.WeatherData$athens.windBearing * pi / 180)
+athens.windBearing.sine = sin(darkSky.WeatherData$athens.windBearing * pi / 180)
+thessaloniki.windBearing.cosine = cos(darkSky.WeatherData$thessaloniki.windBearing * pi / 180)
+thessaloniki.windBearing.sine = sin(darkSky.WeatherData$thessaloniki.windBearing * pi / 180)
 
 
 ###add new sine cosine columns####

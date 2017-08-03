@@ -10,7 +10,7 @@ fill.NA.values = function(df.column) {
     
     na.List = which(is.na(darkSky.WeatherData[[df.column]]))
     
-    if ( length(na.List) >0 ) {
+    if ( length(na.List) > 0 ) {
       for (i in 1:length(na.List)) {
         
         darkSky.WeatherData[[df.column]][na.List[i]] = mean(c(
@@ -21,7 +21,7 @@ fill.NA.values = function(df.column) {
     }
     
     na.List = which(is.na(darkSky.WeatherData[[df.column]]))
-    if ( length(na.List) >0 ) {
+    if ( length(na.List) > 0 ) {
       
       for (i in 1:length(na.List)) {
         
@@ -38,7 +38,7 @@ fill.NA.values = function(df.column) {
     
     #about the rest NA values fill them using the previous one####
     na.List = which(is.na(darkSky.WeatherData[[df.column]]))
-    if ( length(na.List) >0 ) {
+    if ( length(na.List) > 0 ) {
       
       darkSky.WeatherData[[df.column]][na.List] = 
         darkSky.WeatherData[[df.column]][na.List-1]

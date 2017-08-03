@@ -9,8 +9,8 @@ isRushHour = time
 isRushHour[(isRushHour>=0) & (isRushHour<=7)] = 0
 isRushHour[(isRushHour>=8) & (isRushHour<=14)] = 1
 isRushHour[(isRushHour>=15) & (isRushHour<=17)] = 0
-isRushHour[(isRushHour>=18) & (isRushHour<=20)] = 1
-isRushHour[(isRushHour>=21) & (isRushHour<=23)] = 0
+isRushHour[(isRushHour>=18) & (isRushHour<=22)] = 1
+isRushHour[(isRushHour==23)] = 0
 darkSky.WeatherData =  add_column(darkSky.WeatherData, isRushHour, .after = "time")
 darkSky.WeatherData$isRushHour = as.factor(darkSky.WeatherData$isRushHour)
 

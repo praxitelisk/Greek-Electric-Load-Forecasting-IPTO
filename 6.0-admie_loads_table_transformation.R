@@ -222,6 +222,19 @@ for (i in seq(5, dim(finalDataFrame)[1])) {
 } #end of for
 
 
+#renaming some of the first columns
+names(final.Data.Set)[1] = "time"
+names(final.Data.Set)[2] = "weekday"
+names(final.Data.Set)[4] = "isWeekend"
+names(final.Data.Set)[5] = "isHoliday"
+names(final.Data.Set)[6] = "day.of.week"
+names(final.Data.Set)[7] = "sine.day.of.week"
+names(final.Data.Set)[8] = "cosine.day.of.week"
+names(final.Data.Set)[9] = "day.of.year"
+names(final.Data.Set)[10] = "sine.day.of.year"
+names(final.Data.Set)[11] = "cosine.day.of.year"
+
+
 #keep a final.Data.Set backup####
 backUp.final.Data.Set = final.Data.Set
 
