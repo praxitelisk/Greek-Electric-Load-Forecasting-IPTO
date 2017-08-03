@@ -3,7 +3,7 @@ final.Data.Set = backUp.final.Data.Set
 
 #get current day features####
 current.day.list.of.features = 
-  colnames(final.Data.Set)[-grep("^thessaloniki.icon|^athens.icon|^thessaloniki.summary|^athens.summary|^isHoliday|^isWeekend|^isRushHour|^cosine.day.of.year.0|^sine.day.of.year.0|^day.of.year.0|^cosine.day.of.week.0|^sine.day.of.week.0|^day.of.week.0|^weekday.0|^time.0|^yesterday|^three|^two|^Loads|uvIndex", colnames(final.Data.Set))]
+  colnames(final.Data.Set)[-grep("^thessaloniki.icon|^athens.icon|^thessaloniki.summary|^athens.summary|^isHoliday|^isWeekend|^isRushHour|^cosine.day.of.year.0|^sine.day.of.year.0|^day.of.year.0|^cosine.day.of.week.0|^sine.day.of.week.0|^day.of.week.0|^weekday.0|^time.0|^yesterday|^three|^two|^Loads|^thessaloniki.uvIndex|^athens.uvIndex", colnames(final.Data.Set))]
 
 
 #change the names for current loads adding the prefix forecast.####
@@ -32,4 +32,4 @@ for(i in 1:24) {
     cos(final.Data.Set[paste("forecast.athens.windBearing", i-1, sep=".")])
 }
 
-rm(current.day.list.of.features)
+rm(current.day.list.of.features, i)

@@ -6,9 +6,9 @@ time = darkSky.WeatherData$time
 time = format(time, format='%H')
 time = as.numeric(time)
 isRushHour = time
-isRushHour[(isRushHour>=0) & (isRushHour<=6)] = 0
-isRushHour[(isRushHour>=7) & (isRushHour<=15)] = 1
-isRushHour[(isRushHour>=16) & (isRushHour<=17)] = 0
+isRushHour[(isRushHour>=0) & (isRushHour<=7)] = 0
+isRushHour[(isRushHour>=8) & (isRushHour<=14)] = 1
+isRushHour[(isRushHour>=15) & (isRushHour<=17)] = 0
 isRushHour[(isRushHour>=18) & (isRushHour<=20)] = 1
 isRushHour[(isRushHour>=21) & (isRushHour<=23)] = 0
 darkSky.WeatherData =  add_column(darkSky.WeatherData, isRushHour, .after = "time")
@@ -17,7 +17,7 @@ darkSky.WeatherData$isRushHour = as.factor(darkSky.WeatherData$isRushHour)
 
 
 #isWeekend new feature####
-cat("#isWeekend new feature####")
+cat("#isWeekend new feature####\n")
 isWeekend = as.character(darkSky.WeatherData$weekday)
 isWeekend[(isWeekend == "Σάββατο") | (isWeekend == "Κυριακή")] = 1
 isWeekend[(isWeekend != "Σαββατο") & (isWeekend != "Κυριακή") & (isWeekend != 1)] = 0
@@ -30,7 +30,7 @@ darkSky.WeatherData$isWeekend = as.factor(darkSky.WeatherData$isWeekend)
 #http://karamatskos.blogspot.gr/2012/04/blog-post_07.html
 #http://www.eortologio.gr/arthra/pasxa.php
 
-cat("#new holidays feature####")
+cat("#new holidays feature####\n")
 time = darkSky.WeatherData$time
 time = format(time, format='%Y')
 years = unique(time)

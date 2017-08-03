@@ -227,7 +227,7 @@ backUp.final.Data.Set = final.Data.Set
 
 
 #remove some variables with no use####
-rm(combinedWeather, combinedLoads, removeColumn, i, j)
+rm(combinedWeather, combinedLoads, removeColumn, i, j, is.zero.list)
 
 
 cat("elapsed time in minutes: ", (proc.time()[3]-startTime)/60)

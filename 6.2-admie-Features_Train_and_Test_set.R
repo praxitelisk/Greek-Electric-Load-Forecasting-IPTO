@@ -7,7 +7,7 @@ testSet = final.Data.Set[(dim(final.Data.Set)[1] - split + 1):dim(final.Data.Set
 
 
 full.list.of.features = names(trainSet)
-full.list.of.features = full.list.of.features[-grep("pressure|precipType|^Loads|time.0|weekday.0", full.list.of.features)]
+full.list.of.features = full.list.of.features[-grep("^Loads|time.0|weekday.0", full.list.of.features)]
 
 
 full.list.of.FeaturesVariables = 
