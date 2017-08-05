@@ -7,7 +7,7 @@ testSet = final.Data.Set[(dim(final.Data.Set)[1] - split + 1):dim(final.Data.Set
 
 
 full.list.of.features = names(trainSet)
-full.list.of.features = full.list.of.features[-grep("^Loads|time|weekday|icon|windBearing.[0-9]+$|apparentTemperature|day.of.week|sine.day.of.week|cosine.day.of.week|day.of.year|cosine.day.of.year|sine.day.of.year", full.list.of.features)]
+full.list.of.features = full.list.of.features[-grep("^Loads|time|weekday|icon|windBearing.[0-9]+$|apparentTemperature|day.of.week|sine.day.of.week|cosine.day.of.week|day.of.year|cosine.day.of.year|sine.day.of.year|cloudCover|uvIndex", full.list.of.features)]
 
 
 full.list.of.FeaturesVariables = 

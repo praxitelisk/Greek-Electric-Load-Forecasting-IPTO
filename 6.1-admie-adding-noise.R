@@ -14,7 +14,7 @@ colnames(final.Data.Set)[grep(paste("^", current.day.list.of.features, collapse 
 #adding noise from uniform distribution####
 final.Data.Set[grep("^forecast", colnames(final.Data.Set))] = 
   round(final.Data.Set[grep("^forecast", colnames(final.Data.Set))] +
-          runif(final.Data.Set[grep("^forecast", colnames(final.Data.Set))], -0.5, 0.5), 3)
+          runif(final.Data.Set[grep("^forecast", colnames(final.Data.Set))], -0.5, 0.5), 2)
 
 
 #recalculate the sine and cosine from windbearing####

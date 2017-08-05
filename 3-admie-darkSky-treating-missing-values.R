@@ -9,6 +9,7 @@ fill.NA.values = function(df.column) {
   while(length(which(is.na(darkSky.WeatherData[[df.column]]))) != 0 ) {
     
     na.List = which(is.na(darkSky.WeatherData[[df.column]]))
+    cat(df.column, " NA percent: ", 100 * length(na.List) / nrow(darkSky.WeatherData),"\n\n")
     
     if ( length(na.List) > 0 ) {
       for (i in 1:length(na.List)) {
@@ -116,7 +117,10 @@ darkSky.WeatherData = fill.NA.values("athens.windSpeed")
 #thessaloniki icon missing values#####
 cat("#thessaloniki icon missing values#####\n")
 na.List = which(is.na(darkSky.WeatherData$thessaloniki.icon))
+cat("icon NA percent: ", 100 * length(na.List) / nrow(darkSky.WeatherData),"\n\n")
+
 for (i in 1:length(na.List)) {
+  
   
   darkSky.WeatherData$thessaloniki.icon[na.List[i]] = 
     darkSky.WeatherData$thessaloniki.icon[na.List[i] - 1]
@@ -126,7 +130,10 @@ for (i in 1:length(na.List)) {
 #athens icon missing values#####
 cat("#athens icon missing values#####\n")
 na.List = which(is.na(darkSky.WeatherData$athens.icon))
+cat("icon NA percent: ", 100 * length(na.List) / nrow(darkSky.WeatherData),"\n\n")
+
 for (i in 1:length(na.List)) {
+  
       
   darkSky.WeatherData$athens.icon[na.List[i]] = 
     darkSky.WeatherData$athens.icon[na.List[i] - 1]
@@ -136,7 +143,10 @@ for (i in 1:length(na.List)) {
 #thessaloniki summary missing values#####
 cat("#thessaloniki summary missing values#####\n")
 na.List = which(is.na(darkSky.WeatherData$thessaloniki.summary))
+cat("summary NA percent: ", 100 * length(na.List) / nrow(darkSky.WeatherData),"\n\n")
+
 for (i in 1:length(na.List)) {
+  
   
   darkSky.WeatherData$thessaloniki.summary[na.List[i]] = 
     darkSky.WeatherData$thessaloniki.summary[na.List[i] - 1]
@@ -146,7 +156,11 @@ for (i in 1:length(na.List)) {
 #athens summary missing values#####
 cat("#athens summary missing values#####\n")
 na.List = which(is.na(darkSky.WeatherData$athens.summary))
+cat("summary NA percent: ", 100 * length(na.List) / nrow(darkSky.WeatherData),"\n\n")
+
 for (i in 1:length(na.List)) {
+  
+  
   
   darkSky.WeatherData$athens.summary[na.List[i]] = 
     darkSky.WeatherData$athens.summary[na.List[i] - 1]
@@ -158,11 +172,6 @@ cat("##thessaloniki windBearing missing values####\n")
 darkSky.WeatherData = fill.NA.values("thessaloniki.windBearing")
 
 
-#darkSky.WeatherData$sine.thessaloniki.windBearing = 
-#  sin(darkSky.WeatherData$thessaloniki.windBearing)
-
-#darkSky.WeatherData$cosine.thessaloniki.windBearing = 
-#  cos(darkSky.WeatherData$thessaloniki.windBearing)
 
 
 #athens windbearing missing values#####
@@ -170,11 +179,6 @@ cat("##athens windBearing missing values####\n")
 darkSky.WeatherData = fill.NA.values("athens.windBearing")
 
 
-#darkSky.WeatherData$sine.athens.windBearing = 
-#  sin(darkSky.WeatherData$athens.windBearing)
-
-#darkSky.WeatherData$cosine.athens.windBearing = 
-#  cos(darkSky.WeatherData$athens.windBearing)
 
 
 ##thessaloniki visibility missing values####
@@ -190,23 +194,32 @@ darkSky.WeatherData = fill.NA.values("athens.visibility")
 ##thessaloniki uvIndex missing values####
 cat("##thessaloniki uvIndex missing values####\n")
 na.List = which(is.na(darkSky.WeatherData$thessaloniki.uvIndex))
-for (i in 1:length(na.List)) {
-  
-  darkSky.WeatherData$thessaloniki.uvIndex[na.List[i]] =
-    darkSky.WeatherData$thessaloniki.uvIndex[na.List[i] - 1]
-  
-}
 
-#if still NA values exist
+while(length(na.List) != 0) {
+
+  na.List = which(is.na(darkSky.WeatherData$thessaloniki.uvIndex))
+  cat("uvIndex NA percent: ", 100 * length(na.List) / nrow(darkSky.WeatherData),"\n\n")
+  
+  for (i in 1:length(na.List)) {
+    
+    darkSky.WeatherData$thessaloniki.uvIndex[na.List[i]] =
+      darkSky.WeatherData$thessaloniki.uvIndex[na.List[i] - 1]
+    
+  }
+
+}
 
 
 ##athens uvIndex missing values####
 cat("##athens uvIndex missing values####\n")
 na.List = which(is.na(darkSky.WeatherData$athens.uvIndex))
 
+
 while(length(na.List) != 0) {
   
   na.List = which(is.na(darkSky.WeatherData$athens.uvIndex))
+  cat("uvIndex NA percent: ", 100 * length(na.List) / nrow(darkSky.WeatherData),"\n\n")
+  
   for (i in 1:length(na.List)) {
     
     darkSky.WeatherData$athens.uvIndex[na.List[i]] =

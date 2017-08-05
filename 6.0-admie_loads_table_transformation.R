@@ -10,6 +10,45 @@ darkSky.N.Loads.Combined =
   merge(darkSky.WeatherData, myLoads, by="time", all.y = TRUE)
 
 
+#resolving some missing values that occured during the merge
+na.List = which(is.na(darkSky.N.Loads.Combined$weekday))
+
+#filling the NA values
+for(i in 1:length(na.List)) {
+  
+  darkSky.N.Loads.Combined$time[na.List[i]] = 
+    darkSky.N.Loads.Combined$time[na.List[i]] + 23 * 60 * 60
+  
+  darkSky.N.Loads.Combined[na.List[i], 2:11] = 
+    darkSky.N.Loads.Combined[(na.List[i]+ 1), 2:11]
+  
+  darkSky.N.Loads.Combined[na.List[i], 12:13] = 
+    darkSky.N.Loads.Combined[(na.List[i] - 1), 12:13]
+  
+  
+  for(k in 14:24) {
+  
+    darkSky.N.Loads.Combined[na.List[i], k] = 
+    mean(c(darkSky.N.Loads.Combined[(na.List[i] + 1), k],
+           darkSky.N.Loads.Combined[(na.List[i] - 1), k]))
+     
+  }
+  
+  darkSky.N.Loads.Combined[na.List[i], 25:26] = 
+    darkSky.N.Loads.Combined[(na.List[i]+ 1), 25:26]
+  
+  
+  for(k in 27:37) {
+    
+    darkSky.N.Loads.Combined[na.List[i], k] = 
+      mean(c(darkSky.N.Loads.Combined[(na.List[i] + 1), k],
+             darkSky.N.Loads.Combined[(na.List[i] - 1), k]))
+    
+  }
+  
+}
+rm(k)
+
 #resolving March's daylight saving (March's last Sunday) 23 hour day issue####
 cat("#resolving March's daylight saving (March's last Sunday) 23 hour day issue####\n")
 is.zero.list = which(darkSky.N.Loads.Combined$Loads == 0)
@@ -241,6 +280,7 @@ backUp.final.Data.Set = final.Data.Set
 
 #remove some variables with no use####
 rm(combinedWeather, combinedLoads, removeColumn, i, j, is.zero.list)
+rm(na.List)
 
 
 cat("elapsed time in minutes: ", (proc.time()[3]-startTime)/60)

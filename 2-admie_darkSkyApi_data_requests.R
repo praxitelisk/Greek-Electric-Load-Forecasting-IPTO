@@ -2,7 +2,22 @@ library("jsonlite")
 
 startTime <- proc.time()[3]
 
-list.of.api.keys = c("*****")
+list.of.api.keys = c("b8c4c289e035b3024a466e8d886b3fa9",
+                     "06626db0344ec2b98259bf1efeda8cae",
+                     "ec694749e1c8a8b9d716bf73e369bcce",
+                     "18f9e95a36795766d7bd4d684c93df55",
+                     "f3e286a8dfc0bd86b9cd92462da3cc3e",
+                     "540ff06bad91d0accb73f6b259fabbe8",
+                     "c958e254bbb4c87dbf76e9b006eae6df",
+                     "4af9ccdc88e8fc385fd72bc2c71c704d",
+                     "9a690d76a4f70ca8a58f92451333ce51",
+                     "a18173bef1fb9cec7bb15bfde42d2028",
+                     "a9d04a5e038b9198b8b38484562ee09e",
+                     "482b5abd9d0976f99ead7d606443bff7",
+                     "f5941de10a5dcfb2445c9b5a0699417a",
+                     "97a5a043ef583d970e628e8649abd3bc",
+                     "837efbc72aaaec75644a22c1488ecbcf",
+                     "680e0da95389cfe69760a38af253617c")
 
 
 darkSky.WeatherData.temp <- list()
@@ -10,7 +25,7 @@ darkSky.WeatherData.temp <- list()
 api.key.calls = 1
 api.key.index = 1
 
-days <- seq(from=as.Date('2010-10-01'), to=as.Date("2011-10-01"),by='days' )
+days <- seq(from=as.Date('2010-10-01'), to=as.Date("2017-05-01"),by='days' )
 
 for ( i in seq_along(days) ) {
   
@@ -120,7 +135,7 @@ darkSky.WeatherData.temp =
   darkSky.WeatherData.temp[-grep("precipType",names(darkSky.WeatherData.temp))]
 
 #create a backup####
-#backUp.DarkSky = darkSky.WeatherData
+backUp.DarkSky = darkSky.WeatherData
 
 cat("elapsed time in minutes: ", (proc.time()[3]-startTime)/60)
 

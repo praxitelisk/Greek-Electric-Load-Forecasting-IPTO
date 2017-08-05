@@ -8,18 +8,18 @@ temp = myLoads
 # datesToBeRemoved = temp$DATE[OctoberToBeRemoved]
 # 
 # for(i in 1:length(datesToBeRemoved)) {
-#   print(datesToBeRemoved[i])
+#   #print(datesToBeRemoved[i])
 #   temp = temp[!temp$DATE == datesToBeRemoved[i], ]
 # }
-# 
-# 
-# #remove the March's last Sunday-------------
-# 
+
+
+#remove the March's last Sunday-------------
+
 # MarchToBeRemoved = which((temp$HOUR == 24 & temp$Loads==0))
 # datesToBeRemoved = temp$DATE[MarchToBeRemoved]
 # 
 # for(i in 1:length(datesToBeRemoved)) {
-#   print(datesToBeRemoved[i])
+#   #print(datesToBeRemoved[i])
 #   temp = temp[!temp$DATE == datesToBeRemoved[i], ]
 # }
 
