@@ -20,8 +20,8 @@ reg.type.List = c("eps-regression", "nu-regression")
 reg.type = reg.type.List[1]
 
 
-gammaValues = 5 * 10^(-6:0)  # 10^(-4)
-costValues = 2 ^ (0:9) # ^(6)
+gammaValues = 5 * 10^(-6:0) #10^(-4)
+costValues = 2 ^ (0:9)  # (6) 
 crossValue = 2
 nuValue = 5 * 10 ^ (-1)
 
@@ -201,7 +201,7 @@ for(reg.type in reg.type.List) {
         else
           temp$nu = nuValue
         
-        temp = rbind(temp, temp)
+        experiments_svm = rbind(experiments_svm, temp)
         rm(temp)
       }
       
@@ -231,7 +231,6 @@ rm(costValue)
 rm(costValues)
 rm(crossValue)
 rm(nuValue)
-rm(nuValues)
 rm(i)
 rm(reg.type)
 rm(reg.type.List)
