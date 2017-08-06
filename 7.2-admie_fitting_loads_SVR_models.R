@@ -20,8 +20,8 @@ reg.type.List = c("eps-regression", "nu-regression")
 reg.type = reg.type.List[1]
 
 
-gammaValues = 5 * 10^(-6:0) #10^(-4)
-costValues = 2 ^ (0:9)  # (6) 
+gammaValues = 5 * 10 ^(-6:-2) #10^(-4)
+costValues = 2 ^ (3:8) #(6)
 crossValue = 2
 nuValue = 5 * 10 ^ (-1)
 
@@ -35,8 +35,8 @@ for(reg.type in reg.type.List) {
       for(i in 1:24) {
         
         
-        list.of.features = getSelectedAttributes(final.boruta.list2[[i]], withTentative = F)
-        
+        list.of.features = #getSelectedAttributes(final.boruta.list2[[i]], withTentative = F)
+        full.list.of.features
         
         cat("\n svm model at",  i-1 ," o' clock, with the following combination of features:\n\n",list.of.features,"\n\n")
         
@@ -75,7 +75,8 @@ for(reg.type in reg.type.List) {
       cat("making predictions\n")
       for(i in 1:24) {
         
-        list.of.features = getSelectedAttributes(final.boruta.list2[[i]], withTentative = F)
+        list.of.features = #getSelectedAttributes(final.boruta.list2[[i]], withTentative = F)
+          full.list.of.features
         
         #create the predictor variables from training
         FeaturesVariables = 
@@ -167,7 +168,7 @@ for(reg.type in reg.type.List) {
         if(length(list.of.features) != length(full.list.of.features))
           experiments_svm$features = "feature selection"
         else
-          experiments_svm$features = full.list.of.features
+          experiments_svm$features = "full.list.of.features"
         
         experiments_svm$reg.type = reg.type
         
@@ -191,7 +192,7 @@ for(reg.type in reg.type.List) {
         if(length(list.of.features) != length(full.list.of.features))
           temp$features = "feature selection"
         else
-          temp$features = full.list.of.features
+          temp$features = "full.list.of.features"
         
         temp$gamma = gammaValue
         temp$cost = costValue
