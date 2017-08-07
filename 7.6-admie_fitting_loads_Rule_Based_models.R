@@ -11,13 +11,12 @@ trainSet = final.Data.Set[1:(dim(final.Data.Set)[1]-split), ]
 testSet = final.Data.Set[(dim(final.Data.Set)[1] - split + 1):dim(final.Data.Set)[1], ]
 
 
-for(committee in 31:33) {
+for(committee in 1:16) {
   
   for(i in 1:24) {
 
     
-    list.of.features = 
-      getSelectedAttributes(final.boruta.list[[i]], withTentative = F)
+    list.of.features =  getSelectedAttributes(final.boruta.list2[[i]], withTentative = F)
     
     
     cat("\n Rule based model at",  i-1 ," o' clock, with the following combination of features:\n\n",list.of.features,"\n")
@@ -46,17 +45,16 @@ for(committee in 31:33) {
   }
   
   #printing the models' summaries####
-  for(i in 1:24) {
-    print(summary(fit.rule[[i]]))
-  }
+  # for(i in 1:24) {
+  #   print(summary(fit.rule[[i]]))
+  # }
   
   
   #making predictions####
   cat("making predictions\n")
   for(i in 1:24) {
     
-    list.of.features = 
-      getSelectedAttributes(final.boruta.list[[i]], withTentative = F)
+    list.of.features = getSelectedAttributes(final.boruta.list2[[i]], withTentative = F)
     
     
     #create the predictor variables from training
@@ -131,22 +129,32 @@ for(committee in 31:33) {
   
   #saving the experiments####
   if (!exists("experiments_rules")) {
-    experiments_rules = data.frame("mape" = NA, "mae" = NA, "mse" = NA, "rmse" = NA, "committee" = NA) 
+    experiments_rules = data.frame("mape" = NA, "mae" = NA, "mse" = NA, "rmse" = NA, "features" = NA, "committee" = NA) 
     
     experiments_rules$mape = mean.mape.rule
     experiments_rules$mae = mean.mae.rule
     experiments_rules$mse = mean.mse.rule
     experiments_rules$rmse = mean.rmse.rule
     
+    if(length(list.of.features) != length(full.list.of.features))
+      experiments_rules$features = "feature selection"
+    else
+      experiments_rules$features = "full.list.of.features"
+    
     experiments_rules$committee = committee
     
   } else {
-    temp = data.frame("mape" = NA, "mae" = NA, "mse" = NA, "rmse" = NA, "committee" = NA)
+    temp = data.frame("mape" = NA, "mae" = NA, "mse" = NA, "rmse" = NA, "features" = NA, "committee" = NA)
     
     temp$mape = mean.mape.rule
     temp$mae = mean.mae.rule
     temp$mse = mean.mse.rule
     temp$rmse = mean.rmse.rule
+    
+    if(length(list.of.features) != length(full.list.of.features))
+      temp$features = "feature selection"
+    else
+      temp$features = "full.list.of.features"
     
     temp$committee = committee
     
@@ -169,8 +177,3 @@ for(committee in 31:33) {
 }
 
 rm(committee)
-
-
-#fit.Rule.0 <- cubist(x = FeaturesVariables[-grep("Loads.0", names(FeaturesVariables))], y = FeaturesVariables$Loads.0)
-
-
