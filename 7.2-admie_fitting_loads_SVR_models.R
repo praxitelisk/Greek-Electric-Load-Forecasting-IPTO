@@ -20,10 +20,13 @@ reg.type.List = c("eps-regression", "nu-regression")
 reg.type = reg.type.List[1]
 
 
-gammaValues = 5 * 10 ^(-6:-2) #10^(-4)
-costValues = 2 ^ (3:8) #(6)
+gammaValues = 5 * 10^(-4) # 10 ^(-6:-2) #
+costValues = 2 ^ (6) # (3:8) #
 crossValue = 2
 nuValue = 5 * 10 ^ (-1)
+
+prevMape = 1000
+currMape = 2000
 
 for(reg.type in reg.type.List) {
   for(costValue in costValues) {
@@ -35,15 +38,16 @@ for(reg.type in reg.type.List) {
       for(i in 1:24) {
         
         
-        list.of.features = #getSelectedAttributes(final.boruta.list2[[i]], withTentative = F)
-        full.list.of.features
+        list.of.features = getSelectedAttributes(final.boruta.list2[[i]], withTentative = F)
+        #full.list.of.features
         
         cat("\n svm model at",  i-1 ," o' clock, with the following combination of features:\n\n",list.of.features,"\n\n")
         
         
         #create the predictor variables from training
         FeaturesVariables = 
-          subset(trainSet, select = grep(paste(list.of.features, collapse = "|"), names(trainSet)))
+          trainSet[list.of.features]
+        
         
         #add the response variable in trainSet
         FeaturesVariables[paste("Loads", i-1, sep=".")] = 
@@ -75,12 +79,12 @@ for(reg.type in reg.type.List) {
       cat("making predictions\n")
       for(i in 1:24) {
         
-        list.of.features = #getSelectedAttributes(final.boruta.list2[[i]], withTentative = F)
-          full.list.of.features
+        list.of.features = getSelectedAttributes(final.boruta.list2[[i]], withTentative = F)
+          #full.list.of.features
         
         #create the predictor variables from training
         FeaturesVariables = 
-          subset(trainSet, select = grep(paste(list.of.features, collapse = "|"), names(trainSet)))
+          trainSet[list.of.features]
         
         
         #create the predictor.df data.frame for predictions####
@@ -217,9 +221,17 @@ for(reg.type in reg.type.List) {
       rm(list=ls(pattern="rmse.svm."))
         
       
+      prevMape = currMape
+      currMape = mean.mape.svm
+      
+      if ( abs(prevMape - currMape) < 0.001   ) break;
       
     }
+    
+    if ( abs(prevMape - currMape) < 0.001   ) break;
   }
+  
+  if ( abs(prevMape - currMape) < 0.001   ) break;
 }
 
 

@@ -10,22 +10,24 @@ split = 2 * 365
 trainSet = final.Data.Set[1:(dim(final.Data.Set)[1]-split), ]
 testSet = final.Data.Set[(dim(final.Data.Set)[1] - split + 1):dim(final.Data.Set)[1], ]
 
+prevMape = 1000
+currMape = 2000
 
 for(committee in 1:16) {
   
   for(i in 1:24) {
 
     
-    list.of.features =  getSelectedAttributes(final.boruta.list2[[i]], withTentative = F)
+    list.of.features =  full.list.of.features #getSelectedAttributes(final.boruta.list2[[i]], withTentative = F)
     
     
     cat("\n Rule based model at",  i-1 ," o' clock, with the following combination of features:\n\n",list.of.features,"\n")
     cat("\n committee = ", committee, "\n\n")
     
     #create the predictor variables from training
-    FeaturesVariables = 
-      subset(trainSet, select = grep(paste(list.of.features, collapse = "|"), names(trainSet)))
-    
+    FeaturesVariables = trainSet[list.of.features]
+     
+      
     #add the response variable in trainSet
     FeaturesVariables[paste("Loads", i-1, sep=".")] = 
       trainSet[paste("Loads", i-1, sep=".")]
@@ -54,12 +56,11 @@ for(committee in 1:16) {
   cat("making predictions\n")
   for(i in 1:24) {
     
-    list.of.features = getSelectedAttributes(final.boruta.list2[[i]], withTentative = F)
+    list.of.features = full.list.of.features #getSelectedAttributes(final.boruta.list2[[i]], withTentative = F)
     
     
     #create the predictor variables from training
-    FeaturesVariables = 
-      subset(trainSet, select = grep(paste(list.of.features, collapse = "|"), names(trainSet)))
+    FeaturesVariables = trainSet[list.of.features]
     
     
     #create the predictor.df data.frame for predictions####
@@ -171,9 +172,14 @@ for(committee in 1:16) {
   rm(list=ls(pattern="mae.rule."))
   rm(list=ls(pattern="mse.rule."))
   rm(list=ls(pattern="rmse.rule."))
-  rm(i)
   
   
+  
+  prevMape = currMape
+  currMape = mean.mape.rule
+  
+  if ( abs(prevMape - currMape) < 0.001   ) break;
 }
 
 rm(committee)
+rm(i)
