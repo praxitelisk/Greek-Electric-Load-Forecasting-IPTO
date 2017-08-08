@@ -8,10 +8,12 @@ http://www.admie.gr/nc/en/home/
   <li>JSONLite package: install.packages("jsonlite")</li>
   <li>lubridate package: install.packages('lubridate')</li>
   <li>Tibble package: install.packages("tibble")</li>
-  <li>Feature Selection library: install.package("Boruta")</li>
-  <li>SVM library: install.package("e1071")</li>
-  <li>Random Forest library: install.package("RandomForest")</li>
-  <li>Neural Network library: install.package("nnet")</li>
-  <li>K' Nearest Neighbors library: install.package("FNN")</li>
-  <li>Rule Based Models library: install.package("Cubist")</li>
+  <li>Feature Selection, library: install.package("Boruta")</li>
+  <li>SVM models, library: install.package("e1071")</li>
+  <li>Random Forest, library: install.package("RandomForest")</li>
+  <li>Neural Network, library: install.package("nnet")</li>
+  <li>K' Nearest Neighbors, library: install.package("FNN")</li>
+  <li>Rule Based Models, library: install.package("Cubist")</li>
+  <li>xgboost models, library: install.package("xgboost")</li>
+  <li>Decision Trees models, library: install.package("rpart")</li>
 </ul>

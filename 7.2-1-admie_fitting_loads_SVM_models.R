@@ -22,15 +22,13 @@ reg.type = reg.type.List[1]
 
 gammaValues = 5 * 10^(-4) # 10 ^(-6:-2) #
 costValues = 2 ^ (6) # (3:8) #
-crossValue = 2
-nuValue = 5 * 10 ^ (-1)
+nuValue = (3:7) * 10 ^ (-1)
 
 prevMape = 1000
 currMape = 2000
 
-for(reg.type in reg.type.List) {
-  for(costValue in costValues) {
-    for(gammaValue in gammaValues) {
+for(costValue in costValues) {
+  for(gammaValue in gammaValues) {
 
       cat("\n\ncost = ", costValue, ", gamma = ", gammaValue,", reg.type = ", reg.type ,"\n\n")
       
@@ -54,14 +52,10 @@ for(reg.type in reg.type.List) {
           trainSet[paste("Loads", i-1, sep=".")]
         
         
-        if(reg.type == reg.type.List[1])
-          assign(paste("fit.svm", i-1, sep="."), 
-                svm(as.formula(paste("Loads.", i-1, "~.", sep="")), data = FeaturesVariables, cost = costValue, gamma = gammaValue, type = reg.type))
+        
+        assign(paste("fit.svm", i-1, sep="."), 
+              svm(as.formula(paste("Loads.", i-1, "~.", sep="")), data = FeaturesVariables, cost = costValue, gamma = gammaValue))
       
-        else
-          assign(paste("fit.svm", i-1, sep="."), 
-                 svm(as.formula(paste("Loads.", i-1, "~.", sep="")), data = FeaturesVariables, cost = costValue, gamma = gammaValue, type = reg.type, nu = nuValue))
-          
         
         FeaturesVariables[paste("Loads", i-1, sep=".")] = NULL  
       }
@@ -162,36 +156,35 @@ for(reg.type in reg.type.List) {
       
       #saving the experiments####
       if (!exists("experiments_svm")) {
-        experiments_svm = data.frame("mape" = NA, "mae" = NA, "mse" = NA, "rmse" = NA, "features" = NA, "reg.type" = reg.type, "gamma" = NA, "cost" = NA, "nu" = NA) 
+        experiments_svm = data.frame("mape" = NA, "mae" = NA, "mse" = NA, "rmse" = NA, "features" = NA, "reg.type" = NA, "gamma" = NA, "cost" = NA) 
         
         experiments_svm$mape = mean.mape.svm
         experiments_svm$mae = mean.mae.svm
         experiments_svm$mse = mean.mse.svm
         experiments_svm$rmse = mean.rmse.svm
         
+        experiments_svm$reg.type = "eps.regression"
+        
         if(length(list.of.features) != length(full.list.of.features))
           experiments_svm$features = "feature selection"
         else
           experiments_svm$features = "full.list.of.features"
         
-        experiments_svm$reg.type = reg.type
         
         experiments_svm$gamma = gammaValue
         experiments_svm$cost = costValue
-        
-        if (reg.type == reg.type.List[1])
-          experiments_svm$nu = 0
-        else
-          experiments_svm$nu = nuValue
+      
         
       } else {
-        temp = data.frame("mape" = NA, "mae" = NA, "mse" = NA, "rmse" = NA, "features" = NA, "reg.type" = reg.type, "gamma" = NA, "cost" = NA, "nu" = NA)
+        temp = data.frame("mape" = NA, "mae" = NA, "mse" = NA, "rmse" = NA, "features" = NA, "reg.type" = "NA", "gamma" = NA, "cost" = NA)
         
         
         temp$mape = mean.mape.svm
         temp$mae = mean.mae.svm
         temp$mse = mean.mse.svm
         temp$rmse = mean.rmse.svm
+        
+        temp$reg.type = "eps.regression"
         
         if(length(list.of.features) != length(full.list.of.features))
           temp$features = "feature selection"
@@ -201,10 +194,6 @@ for(reg.type in reg.type.List) {
         temp$gamma = gammaValue
         temp$cost = costValue
         
-        if (reg.type == reg.type.List[1])
-          temp$nu = 0
-        else
-          temp$nu = nuValue
         
         experiments_svm = rbind(experiments_svm, temp)
         rm(temp)
@@ -230,9 +219,6 @@ for(reg.type in reg.type.List) {
     
     if ( abs(prevMape - currMape) < 0.001   ) break;
   }
-  
-  if ( abs(prevMape - currMape) < 0.001   ) break;
-}
 
 
 
@@ -242,7 +228,6 @@ rm(gammaValue)
 rm(gammaValues)
 rm(costValue)
 rm(costValues)
-rm(crossValue)
 rm(nuValue)
 rm(i)
 rm(reg.type)
