@@ -11,8 +11,6 @@ trainSet = final.Data.Set[1:(dim(final.Data.Set)[1]-split), ]
 testSet = final.Data.Set[(dim(final.Data.Set)[1] - split + 1):dim(final.Data.Set)[1], ]
 
 
-#prevMape = 1000
-#currMape = 2000
 
 for (etaValue in seq(0.1, 1, 0.2)) {
   for(depthValue in seq(2, 7, 1)) {
@@ -23,8 +21,8 @@ for (etaValue in seq(0.1, 1, 0.2)) {
       
       for(i in 1:24) {
         
-        list.of.features = getSelectedAttributes(final.boruta.list2[[i]], withTentative = F)
-        #full.list.of.features
+        list.of.features = #getSelectedAttributes(final.boruta.list2[[i]], withTentative = F)
+          full.list.of.features
         
         cat("\n xgboost model at",  i-1 ," o' clock, with the following combination of features:\n\n",list.of.features,"\n\n")
         
@@ -55,8 +53,8 @@ for (etaValue in seq(0.1, 1, 0.2)) {
       cat("making predictions\n")
       for(i in 1:24) {
         
-        list.of.features = getSelectedAttributes(final.boruta.list2[[i]], withTentative = F)
-        #full.list.of.features
+        list.of.features = #getSelectedAttributes(final.boruta.list2[[i]], withTentative = F)
+          full.list.of.features
         
         #create the predictor variables from training
         FeaturesVariables = 

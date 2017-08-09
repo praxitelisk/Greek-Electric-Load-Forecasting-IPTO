@@ -24,8 +24,6 @@ gammaValues = 5 * 10^(-4) # 10 ^(-6:-2) #
 costValues = 2 ^ (6) # (3:8) #
 nuValue = (3:7) * 10 ^ (-1)
 
-prevMape = 1000
-currMape = 2000
 
 for(costValue in costValues) {
   for(gammaValue in gammaValues) {
@@ -208,16 +206,9 @@ for(costValue in costValues) {
       rm(list=ls(pattern="mae.svm."))
       rm(list=ls(pattern="mse.svm."))
       rm(list=ls(pattern="rmse.svm."))
-        
-      
-      prevMape = currMape
-      currMape = mean.mape.svm
-      
-      if ( abs(prevMape - currMape) < 0.001   ) break;
       
     }
     
-    if ( abs(prevMape - currMape) < 0.001   ) break;
   }
 
 
