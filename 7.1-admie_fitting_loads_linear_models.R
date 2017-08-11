@@ -3,6 +3,26 @@ library("Boruta")
 startTime <- proc.time()[3]
 
 
+addlevelsToLm = function(fit.lm.x) {
+  
+  
+  temp = fit.lm.x$xlevels
+  
+  if(length(names(temp)) > 0) {
+    for(t in 1:length(names(temp))) {
+      
+      fit.lm.x$xlevels[[names(temp)[t]]] = 
+        union(fit.lm.x$xlevels[[names(temp)[t]]], levels(predictor.df[, names(temp)[t]]))
+      
+    }
+  }
+  
+  rm(temp, t)
+  
+  return(fit.lm.x)
+}
+
+
 #creating the train and test set####
 split = 2 * 365
 
@@ -20,7 +40,7 @@ for(i in 1:24) {
     
     
   #create the predictor variables from training
-  FeaturesVariables = testSet[list.of.features]
+  FeaturesVariables = trainSet[list.of.features]
   
   
   #add the response variable in trainSet
@@ -36,39 +56,25 @@ for(i in 1:24) {
     
     
   #creating the models####
-  
- # fit.lm.0 = lm(as.formula(paste("Loads.", i-1, "~.", sep="")), data = FeaturesVariables)
-  
   assign(paste("fit.lm", i-1, sep="."), lm(as.formula(paste("Loads.", i-1, "~.", sep="")), data = FeaturesVariables))
+  
+  
+  #log - log
+  #assign(paste("fit.lm", i-1, sep="."), lm(as.formula(paste("log(","Loads.", i-1, ")", "~", paste("log(", names(FeaturesVariables)[-grep(paste("^Loads.", i-1, sep=""), names(FeaturesVariables))], ")", sep="", collapse = "+"), sep="")), data = FeaturesVariables))
   
   
   FeaturesVariables[paste("Loads", i-1, sep=".")] = NULL
     
     
-    #add level to predictor.df in case of missing levels during prediction 
-    #due to the fact that predictor.df is a subset of final.data.set and 
-    #may has fewer levels in categorical data than the trainSet (FeaturesVariables)
-    
-    # temp = fit.lm.0$xlevels
-    # if(length(names(temp))>0) {
-    #   for(t in 1:length(names(temp))) {
-    #     
-    #     fit.lm.0$xlevels[[names(temp)[t]]] = 
-    #       union(fit.lm.0$xlevels[[names(temp)[t]]][], levels(predictor.df[, names(temp)[t]]))
-    #   
-    #   }
-    # }
-    # rm(temp, t)
+
 }
     
-    
-    
-    #collecting the fits in a list####
-    cat("collecting the fits.lm in a list\n")
-    fit.lm = list()
-    for(i in 1:24) {
-      fit.lm[[paste("fit.lm",i-1,sep=".")]] = get(paste("fit.lm",i-1, sep="."))
-    }
+#collecting the fits in a list####
+cat("collecting the fits.lm in a list\n")
+fit.lm = list()
+for(i in 1:24) {
+  fit.lm[[paste("fit.lm",i-1,sep=".")]] = get(paste("fit.lm",i-1, sep="."))
+}
 
 #     
 #     #printing the summaries####
@@ -96,8 +102,17 @@ for(i in 1:24) {
        predictor.df = rbind(predictor.df, testSet[names(testSet) %in% names(predictor.df)])
        
        
-       assign(paste("prediction.lm", i-1, sep="."), predict(fit.lm[[paste("fit.lm",i-1,sep=".")]], predictor.df))
-     }
+       #add level to predictor.df in case of missing levels during prediction 
+       #due to the fact that predictor.df is a subset of final.data.set and 
+       #may has fewer levels in categorical data than the trainSet (FeaturesVariables)
+       
+       prev.fit = get(paste("fit.lm",i-1, sep="."))
+       returned.fit = addlevelsToLm(prev.fit)
+       assign(paste("fit.lm",i-1, sep="."), returned.fit)
+
+
+     assign(paste("prediction.lm", i-1, sep="."), predict(returned.fit, predictor.df))
+    }
      
 
      #and then collect the predictions in a list
@@ -192,7 +207,4 @@ rm(num.of.steps, step.direction, step.direction.list)
 rm(i,j)
 rm(combn.list.of.features, a.list.of.features)
 rm(split)
- 
- 
- 
- cat("total elapsed time in minutes: ", (proc.time()[3]-startTime)/60)
+rm(returned.fit, prev.fit) 
