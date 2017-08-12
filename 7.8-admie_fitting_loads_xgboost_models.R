@@ -13,7 +13,7 @@ testSet = final.Data.Set[(dim(final.Data.Set)[1] - split + 1):dim(final.Data.Set
 
 
 for (etaValue in seq(0.1, 1, 0.2)) {
-  for(depthValue in seq(2, 7, 1)) {
+  for(depthValue in seq(2, 5, 1)) {
     for(roundValue in seq(100, 700, 100)) {
       
       cat("\n\n eta = ", etaValue, ", depth = ", depthValue,", round = ", roundValue ,"\n\n")
