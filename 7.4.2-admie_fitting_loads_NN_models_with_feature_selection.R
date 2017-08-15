@@ -1,4 +1,4 @@
-library(nnet)
+library("nnet")
 library("Boruta")
 library("RSNNS")
 
@@ -12,19 +12,21 @@ trainSet = final.Data.Set[1:(dim(final.Data.Set)[1]-split), ]
 testSet = final.Data.Set[(dim(final.Data.Set)[1] - split + 1):dim(final.Data.Set)[1], ]
 
 
-best.nn.parameters.fs = list()
-best.nn.fit.fs = list()
-best.nn.prediction.fs = list()
+if (!exists("best.nn.parameters.fs")) {
+  best.nn.parameters.fs = list()
+  best.nn.fit.fs = list()
+  best.nn.prediction.fs = list()
+}
 
 #tuning NN parameters per 24hour model####
 for(i in 1:24) {
   
   assign(paste("min.mape.", i-1, sep=""), 1000000)
   
-  for(hiddenLayerNeurons in seq(1, 20, 1)) {
-    for(maxitValue in seq(10, 250, 10)) {
+  for(hiddenLayerNeurons in seq(2, 20, 1)) {
+    for(maxitValue in seq(10, 190, 10)) {
       
-      cat("\n\n tuning model: Load.",i-1, "with hiddenLayerNeurons = ", hiddenLayerNeurons," maxitValue = ", maxitValue," \n")
+      cat("\n\n tuning model: Load.",i-1,"with hiddenLayerNeurons = ", hiddenLayerNeurons," maxitValue = ", maxitValue," \n")
       
       list.of.features = 
         getSelectedAttributes(final.boruta.list2[[i]], withTentative = F)
@@ -54,7 +56,7 @@ for(i in 1:24) {
       
       #train a model####
       assign(paste("fit.nn", i-1, sep="."), 
-             nnet(as.formula(paste("Loads.", i-1, "~.", sep="")), data = FeaturesVariables.scale, size = hiddenLayerNeurons, trace = FALSE, MaxNWts = 1000000, abstol = 1.0e-2, maxit = maxitValue, linout=TRUE, rang = 0))
+             nnet(as.formula(paste("Loads.", i-1, "~.", sep="")), data = FeaturesVariables.scale, size = hiddenLayerNeurons, trace = FALSE, MaxNWts = 1000000, abstol = 1.0e-4, maxit = maxitValue, linout=TRUE, rang = 0))
       
       FeaturesVariables.scale[paste("Loads", i-1, sep=".")] = NULL
       
@@ -112,6 +114,7 @@ for(i in 1:24) {
       assign(paste("mse.nn",i-1,sep="."), temp.mse)
       
       
+      #check if this mape is less than a previous one.
       if( get(paste("min.mape.", i-1, sep="")) > get(paste("mape.nn",i-1,sep=".")) ) {
         
         cat("\n\n ***New best paramenters for Load.", i-1, " model***\n")
@@ -125,7 +128,7 @@ for(i in 1:24) {
         
         
         best.nn.parameters.fs[[paste("best.nn.param.", i-1, sep="")]] = c(hiddenLayerNeurons, maxitValue, get(paste("mape.nn",i-1,sep=".")), get(paste("mae.nn",i-1,sep=".")), get(paste("rmse.nn",i-1,sep=".")), get(paste("mse.nn",i-1,sep=".")))
-        names(best.nn.parameters.fs[[i]]) = list("hiddenLayerNeurons", "maxitValue", paste("mape.nn",i-1,sep="."), paste("mae.nn",i-1,sep="."), paste("rmse.nn",i-1,sep="."), paste("mse.nn",i-1,sep="."))
+        names(best.nn.parameters.fs[[paste("best.nn.param.", i-1, sep="")]]) = list("hiddenLayerNeurons", "maxitValue", paste("mape.nn",i-1,sep="."), paste("mae.nn",i-1,sep="."), paste("rmse.nn",i-1,sep="."), paste("mse.nn",i-1,sep="."))
         
         
         best.nn.fit.fs[[paste("fit.nn", i-1, sep=".")]] = get(paste("fit.nn",i-1, sep="."))
@@ -133,6 +136,52 @@ for(i in 1:24) {
         best.nn.prediction.fs[[paste("prediction.nn",i-1,sep=".")]] = get(paste("prediction.nn",i-1, sep="."))
         
       }
+      
+      
+      #saving each tuning experiments####
+      if (!exists("experiments.nn")) {
+        
+        experiments.nn = data.frame("mape" = NA, "mae" = NA, "mse" = NA, "rmse" = NA, "features" = NA, "method" = NA, "hiddenLayerNeurons" = NA, "maxIter" = NA, "model" = NA) 
+        
+        experiments.nn$features = list(list.of.features)
+        
+        if(length(list.of.features) != length(full.list.of.features))
+          experiments.nn$method = "feature selection"
+        else
+          experiments.nn$method = "full.list.of.features"
+        
+        experiments.nn$mape = temp.mape
+        experiments.nn$mae = temp.mae
+        experiments.nn$mse = temp.mse
+        experiments.nn$rmse = temp.rmse
+        experiments.nn$hiddenLayerNeurons = hiddenLayerNeurons
+        experiments.nn$maxIter = maxitValue
+        experiments.nn$model = paste("Loads.", i-1, sep="")
+        
+      } else {
+        temp = data.frame("mape" = NA, "mae" = NA, "mse" = NA, "rmse" = NA, "features" = NA, "method" = NA, "hiddenLayerNeurons" = NA, "maxIter" = NA, "model" = NA)
+        
+        temp$features = list(list.of.features)
+        
+        
+        if(length(list.of.features) != length(full.list.of.features))
+          temp$method = "feature selection"
+        else
+          temp$method = "full.list.of.features"
+        
+        
+        temp$mape = temp.mape
+        temp$mae = temp.mae
+        temp$mse = temp.mse
+        temp$rmse = temp.rmse
+        temp$hiddenLayerNeurons = hiddenLayerNeurons
+        temp$maxIter = maxitValue
+        temp$model = paste("Loads.", i-1, sep="")
+        
+        experiments.nn = rbind(experiments.nn, temp)
+        rm(temp)
+      }
+      
       
     }
   }
@@ -160,18 +209,20 @@ for(i in 1:length(best.nn.parameters.fs)) {
   temp.mae = temp.mae + best.nn.parameters.fs[[i]][[4]]
   temp.rmse = temp.rmse + best.nn.parameters.fs[[i]][[5]]
   temp.mse = temp.mse + best.nn.parameters.fs[[i]][[6]]
-
+  
 }
-mean.mape.nn = temp.mape/24
-mean.mae.nn = temp.mae/24
-mean.rmse.nn = temp.rmse/24
-mean.mse.nn = temp.mse/24
+
+#change this variable to mean.mape.nn.full etc. for full.list.of.features
+mean.mape.nn.fs = temp.mape/length(best.nn.parameters.fs)
+mean.mae.nn.fs = temp.mae/length(best.nn.parameters.fs)
+mean.rmse.nn.fs = temp.rmse/length(best.nn.parameters.fs)
+mean.mse.nn.fs = temp.mse/length(best.nn.parameters.fs)
 
 cat("\n****************\n")
-cat("mean nn mape: ", round(mean.mape.nn,3), "\n")
-cat("mean nn mae: ", round(mean.mae.nn,5), "\n")
-cat("mean nn mse: ", round(mean.mse.nn,5), "\n")
-cat("mean nn rmse: ", round(mean.rmse.nn,5), "\n")
+cat("mean nn mape: ", round(mean.mape.nn.fs,3), "\n")
+cat("mean nn mae: ", round(mean.mae.nn.fs,5), "\n")
+cat("mean nn mse: ", round(mean.mse.nn.fs,5), "\n")
+cat("mean nn rmse: ", round(mean.rmse.nn.fs,5), "\n")
 
 
 
@@ -184,3 +235,7 @@ rm(predictor.df.scale)
 rm(FeaturesVariables.scale)
 rm(aux.prediction.nn)
 rm(i)
+rm(temp.mape)
+rm(temp.mae)
+rm(temp.mse)
+rm(temp.rmse)
