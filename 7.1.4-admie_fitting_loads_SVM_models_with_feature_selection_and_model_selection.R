@@ -85,13 +85,13 @@ for(i in 1:24) {
       cat("mape = ", temp.mape,"\n\n")
       
       
-      temp.mae =  mean(unlist(abs((get("testSet")[paste("Loads", i-1, sep=".")] - get(paste("prediction.svm", i-1, sep=".")))/get("evaluationSet")[paste("Loads", i-1, sep=".")])))
+      temp.mae =  mean(unlist(abs((get("evaluationSet")[paste("Loads", i-1, sep=".")] - get(paste("prediction.svm", i-1, sep=".")))/get("evaluationSet")[paste("Loads", i-1, sep=".")])))
       
       
-      temp.rmse = sqrt(mean(unlist(abs((get("testSet")[paste("Loads", i-1, sep=".")] - get(paste("prediction.svm", i-1, sep=".")))/get("evaluationSet")[paste("Loads", i-1, sep=".")]))^2))
+      temp.rmse = sqrt(mean(unlist(abs((get("evaluationSet")[paste("Loads", i-1, sep=".")] - get(paste("prediction.svm", i-1, sep=".")))/get("evaluationSet")[paste("Loads", i-1, sep=".")]))^2))
       
       
-      temp.mse = mean(unlist(abs((get("testSet")[paste("Loads", i-1, sep=".")] - get(paste("prediction.svm", i-1, sep=".")))/get("evaluationSet")[paste("Loads", i-1, sep=".")]))^2)
+      temp.mse = mean(unlist(abs((get("evaluationSet")[paste("Loads", i-1, sep=".")] - get(paste("prediction.svm", i-1, sep=".")))/get("evaluationSet")[paste("Loads", i-1, sep=".")]))^2)
       
       
       assign(paste("mape.svm",i-1,sep="."), temp.mape)
@@ -130,7 +130,7 @@ for(i in 1:24) {
       #saving each tuning experiments####
       if (!exists("experiments.svm.ms")) {
         
-        experiments.svm.ms = data.frame("mape" = NA, "mae" = NA, "mse" = NA, "rmse" = NA, "features" = NA, "method" = NA, "gamma" = NA, "cost" = NA, "algorithm" = NA, "model" = NA) 
+        experiments.svm.ms = data.frame("mape" = NA, "mae" = NA, "mse" = NA, "rmse" = NA, "features" = NA, "method" = NA, "gamma" = NA, "cost" = NA, "algorithm" = NA, "model" = NA, "date" = NA) 
         
         experiments.svm.ms$features = list(list.of.features)
         
@@ -147,9 +147,10 @@ for(i in 1:24) {
         experiments.svm.ms$cost = costValue
         experiments.svm.ms$algorithm = "svm"
         experiments.svm.ms$model = paste("Loads.", i-1, sep="")
+        experiments.svm.ms$date = format(Sys.time(), "%d-%m-%y %H:%M")
         
       } else {
-        temp = data.frame("mape" = NA, "mae" = NA, "mse" = NA, "rmse" = NA, "features" = NA, "method" = NA, "gamma" = NA, "cost" = NA, "algorithm" = NA, "model" = NA)
+        temp = data.frame("mape" = NA, "mae" = NA, "mse" = NA, "rmse" = NA, "features" = NA, "method" = NA, "gamma" = NA, "cost" = NA, "algorithm" = NA, "model" = NA, "date" = NA)
         
         temp$features = list(list.of.features)
         
@@ -168,6 +169,7 @@ for(i in 1:24) {
         temp$cost = costValue
         temp$algorithm = "svm"
         temp$model = paste("Loads.", i-1, sep="")
+        temp$date = format(Sys.time(), "%d-%m-%y %H:%M")
         
         experiments.svm.ms = rbind(experiments.svm.ms, temp)
         rm(temp)

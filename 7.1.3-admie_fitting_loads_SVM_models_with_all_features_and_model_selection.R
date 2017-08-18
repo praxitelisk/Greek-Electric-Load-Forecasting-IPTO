@@ -34,8 +34,8 @@ for(i in 1:24) {
   
   assign(paste("min.mape.", i-1, sep=""), 1000000)
   
-  gammaValues = 5 *  10 ^(-5:-2) #10^(-4) #
-  costValues = 2 ^ (2:9) #(6)
+  gammaValues = 5 *  10 ^(-6:-2) #10^(-4) #
+  costValues = 2 ^ (2:10) #(6)
   
   
   for(gammaValue in gammaValues) {
@@ -57,7 +57,7 @@ for(i in 1:24) {
         trainSet[paste("Loads", i-1, sep=".")]
       
       
-      #train a model####
+      #train a model for evaluation####
       assign(paste("fit.svm", i-1, sep="."), 
              svm(as.formula(paste("Loads.", i-1, "~.", sep="")), data = FeaturesVariables, cost = costValue, gamma = gammaValue))
       
@@ -66,7 +66,7 @@ for(i in 1:24) {
       
       
       
-      #create the predictor.df data.frame for predictions####
+      #create the predictor.df data.frame for prediction from evaluation####
       FeaturesVariables = 
         trainSet[list.of.features]
       
@@ -84,13 +84,13 @@ for(i in 1:24) {
       cat("mape = ", temp.mape,"\n\n")
       
       
-      temp.mae =  mean(unlist(abs((get("testSet")[paste("Loads", i-1, sep=".")] - get(paste("prediction.svm", i-1, sep=".")))/get("evaluationSet")[paste("Loads", i-1, sep=".")])))
+      temp.mae =  mean(unlist(abs((get("evaluationSet")[paste("Loads", i-1, sep=".")] - get(paste("prediction.svm", i-1, sep=".")))/get("evaluationSet")[paste("Loads", i-1, sep=".")])))
       
       
-      temp.rmse = sqrt(mean(unlist(abs((get("testSet")[paste("Loads", i-1, sep=".")] - get(paste("prediction.svm", i-1, sep=".")))/get("evaluationSet")[paste("Loads", i-1, sep=".")]))^2))
+      temp.rmse = sqrt(mean(unlist(abs((get("evaluationSet")[paste("Loads", i-1, sep=".")] - get(paste("prediction.svm", i-1, sep=".")))/get("evaluationSet")[paste("Loads", i-1, sep=".")]))^2))
       
       
-      temp.mse = mean(unlist(abs((get("testSet")[paste("Loads", i-1, sep=".")] - get(paste("prediction.svm", i-1, sep=".")))/get("evaluationSet")[paste("Loads", i-1, sep=".")]))^2)
+      temp.mse = mean(unlist(abs((get("evaluationSet")[paste("Loads", i-1, sep=".")] - get(paste("prediction.svm", i-1, sep=".")))/get("evaluationSet")[paste("Loads", i-1, sep=".")]))^2)
       
       
       assign(paste("mape.svm",i-1,sep="."), temp.mape)
@@ -112,6 +112,7 @@ for(i in 1:24) {
         assign(paste("min.mape.", i-1, sep=""), get(paste("mape.svm",i-1,sep=".")))
         
         
+        #collect the best parameters from evaluation####
         best.svm.parameters.full[[paste("best.svm.param.", i-1, sep="")]] = c(gammaValue, costValue, get(paste("mape.svm",i-1,sep=".")), get(paste("mae.svm",i-1,sep=".")), get(paste("rmse.svm",i-1,sep=".")), get(paste("mse.svm",i-1,sep=".")))
         names(best.svm.parameters.full[[paste("best.svm.param.", i-1, sep="")]]) = list("gamma", "cost", paste("mape.svm",i-1,sep="."), paste("mae.svm",i-1,sep="."), paste("rmse.svm",i-1,sep="."), paste("mse.svm",i-1,sep="."))
         
@@ -148,7 +149,7 @@ for(i in 1:24) {
         experiments.svm.ms$model = paste("Loads.", i-1, sep="")
         
       } else {
-        temp = data.frame("mape" = NA, "mae" = NA, "mse" = NA, "rmse" = NA, "features" = NA, "method" = NA, "gamma" = NA, "cost" = NA, "algorithm" = NA, "model" = NA)
+        temp = data.frame("mape" = NA, "mae" = NA, "mse" = NA, "rmse" = NA, "features" = NA, "method" = NA, "gamma" = NA, "cost" = NA, "algorithm" = NA, "model" = NA, "date" = NA)
         
         temp$features = list(list.of.features)
         
