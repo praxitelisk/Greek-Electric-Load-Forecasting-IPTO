@@ -198,6 +198,8 @@ for(i in 1:24) {
   list.of.features = 
     getSelectedAttributes(final.boruta.list2[[i]], withTentative = F)
   
+  cat("\n\n training after evaluation model: Load.",i-1,"with best gamma = ", best.svm.parameters.fs[[i]][["gamma"]]," cost = ", best.svm.parameters.fs[[i]][["cost"]]," \n")
+  
   
   #create the predictor variables from training
   FeaturesVariables = 

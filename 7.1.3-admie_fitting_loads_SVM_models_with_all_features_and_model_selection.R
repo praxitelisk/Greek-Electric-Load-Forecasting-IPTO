@@ -1,5 +1,5 @@
 ##############################################################
-#####SVM tuning and model selection from full features########
+#####SVM tuning and model selection with full features########
 ##############################################################
 
 #load the libraries####
@@ -34,8 +34,8 @@ for(i in 1:24) {
   
   assign(paste("min.mape.", i-1, sep=""), 1000000)
   
-  gammaValues = 5 *  10 ^(-6:-2) #10^(-4) #
-  costValues = 2 ^ (2:10) #(6)
+  gammaValues = 5 *  10 ^(-5:-2) #10^(-4) #
+  costValues = 2 ^ (2:9) #(6)
   
   
   for(gammaValue in gammaValues) {
@@ -195,6 +195,8 @@ for(i in 1:24) {
   
   list.of.features = 
     getSelectedAttributes(final.boruta.list2[[i]], withTentative = F)
+  
+  cat("\n\n training after evaluation model: Load.",i-1,"with best gamma = ", best.svm.parameters.fs[[i]][["gamma"]]," cost = ", best.svm.parameters.fs[[i]][["cost"]]," \n")
   
   
   #create the predictor variables from training

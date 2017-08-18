@@ -33,7 +33,7 @@ fit.svm.full.def = list()
 for(i in 1:24) {
   
   
-  cat("\n\n training model: Load.",i-1, " \n", sep = "")
+  cat("\n\n svm training  model: Load.",i-1," with default parameters and full features \n", sep = "")
   
   list.of.features = full.list.of.features
   

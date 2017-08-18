@@ -33,7 +33,7 @@ fit.svm.fs.def = list()
 for(i in 1:24) {
   
 
-  cat("\n\n training model: Load.",i-1, " \n", sep = "")
+  cat("\n\n svm training  model: Load.",i-1," with default parameters and feature selection \n", sep = "")
   
   list.of.features = 
     getSelectedAttributes(final.boruta.list2[[i]], withTentative = F)
