@@ -1,9 +1,13 @@
 
-#creating the train and test set####
-split = 2 * 365
+#creating the train and test set splits####
+splitEvalSet = 365
+splitTestSet = splitEvalSet + 365
+len = dim(final.Data.Set)[1]
+
 #trainPart = floor(split * dim(final.Data.Set)[1])
-trainSet = final.Data.Set[1:(dim(final.Data.Set)[1]-split), ]
-testSet = final.Data.Set[(dim(final.Data.Set)[1] - split + 1):dim(final.Data.Set)[1], ]
+trainSet = final.Data.Set[1:(len - splitTestSet), ]
+evaluationSet = final.Data.Set[(len-splitTestSet + 1):(len - splitEvalSet), ]
+testSet = final.Data.Set[(len - splitEvalSet + 1):len, ]
 
 
 full.list.of.features = names(trainSet)
