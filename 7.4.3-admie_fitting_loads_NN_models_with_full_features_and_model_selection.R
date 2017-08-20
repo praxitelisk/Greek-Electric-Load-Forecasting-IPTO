@@ -36,177 +36,181 @@ for(i in 1:24) {
   assign(paste("min.mape.", i-1, sep=""), 1000000)
   
   
-  for(hiddenLayerNeurons in seq(2, 10, 1)) {
-    for(maxitValue in seq(10, 100, 10)) {
+  for(learningRateValue in seq(0.05, 0.9, 0.05)) {
+    for(hiddenLayerNeurons in seq(2, 10, 1)) {
+      for(maxitValue in seq(100, 1000, 100)) {
       
-      cat("\n\n tuning model: Load.",i-1,"with full features and hiddenLayerNeurons = ", hiddenLayerNeurons," maxitValue = ", maxitValue," \n")
-      
-      list.of.features = 
-        getSelectedAttributes(final.boruta.list2[[i]], withTentative = F)
-      
-      
-      #create the predictor variables from training
-      FeaturesVariables = 
-        trainSet[list.of.features]
-      
-      
-      
-      #add the response variable in trainSet
-      FeaturesVariables[paste("Loads", i-1, sep=".")] = 
-        trainSet[paste("Loads", i-1, sep=".")]
-      
-      
-      #scaling the train set####
-      #scale the train and test set to[0,1] values
-      
-      #convert all factors to numeric
-      FeaturesVariables.scale = data.matrix(FeaturesVariables)
-      
-      # normalize features into [0,1]
-      FeaturesVariables.scale = normalizeData(FeaturesVariables.scale, type = "0_1")
-      FeaturesVariables.scale = as.data.frame(FeaturesVariables.scale)
-      colnames(FeaturesVariables.scale) = colnames(FeaturesVariables)
-      
-      
-      #train a model####
-      assign(paste("fit.nn", i-1, sep="."), 
-             nnet(as.formula(paste("Loads.", i-1, "~.", sep="")), data = FeaturesVariables.scale, size = hiddenLayerNeurons, trace = FALSE, MaxNWts = 1000000, abstol = 1.0e-4, maxit = maxitValue, linout=TRUE, rang = 0, decay = .005))
-      
-      
-      FeaturesVariables[paste("Loads", i-1, sep=".")] = NULL
-      
-      
-      
-      #create the predictor.df data.frame for predictions####
-      FeaturesVariables = 
-        trainSet[list.of.features]
-      
-      predictor.df = data.frame()
-      predictor.df = FeaturesVariables[0, ]
-      predictor.df = rbind(predictor.df, evaluationSet[names(evaluationSet) %in% names(predictor.df)])
-      
-      
-      #scale the predictor.df data for prediction
-      predictor.df.scale = data.matrix(predictor.df)
-      predictor.df.scale = normalizeData(predictor.df.scale, type = "0_1")
-      predictor.df.scale = as.data.frame(predictor.df.scale)
-      colnames(predictor.df.scale) = colnames(predictor.df)
-      
-      
-      #make the prediction
-      assign(paste("prediction.nn", i-1, sep="."), predict(get(paste("fit.nn",i-1,sep=".")), predictor.df.scale))
-      
-      
-      #denormalize the predictions
-      load.scale = evaluationSet[paste("Loads", i-1, sep=".")]
-      load.scale = normalizeData(load.scale, type="0_1")
-      #load.scale = scale(load.scale, center = min(load.scale), scale = max(load.scale) - min(load.scale))
-      
-      aux.prediction.nn = get(paste("prediction.nn", i-1, sep="."))
-      #aux.prediction.nn = aux.prediction.nn * attr(load.scale, 'scaled:scale') + attr(load.scale, 'scaled:center')
-      aux.prediction.nn = denormalizeData(aux.prediction.nn, getNormParameters(load.scale))
-      
-      assign(paste("prediction.nn", i-1, sep="."), aux.prediction.nn)
-      
-      
-      #calculate mape
-      temp.mape = 100 * mean(unlist(abs((get("evaluationSet")[paste("Loads", i-1, sep=".")] - get(paste("prediction.nn", i-1, sep=".")))/get("evaluationSet")[paste("Loads", i-1, sep=".")])))
-      cat("mape = ", temp.mape,"\n\n")
-      
-      
-      temp.mae =  mean(unlist(abs((get("evaluationSet")[paste("Loads", i-1, sep=".")] - get(paste("prediction.nn", i-1, sep=".")))/get("evaluationSet")[paste("Loads", i-1, sep=".")])))
-      
-      
-      temp.rmse = sqrt(mean(unlist(abs((get("evaluationSet")[paste("Loads", i-1, sep=".")] - get(paste("prediction.nn", i-1, sep=".")))/get("evaluationSet")[paste("Loads", i-1, sep=".")]))^2))
-      
-      
-      temp.mse = mean(unlist(abs((get("evaluationSet")[paste("Loads", i-1, sep=".")] - get(paste("prediction.nn", i-1, sep=".")))/get("evaluationSet")[paste("Loads", i-1, sep=".")]))^2)
-      
-      
-      assign(paste("mape.nn",i-1,sep="."), temp.mape)
-      assign(paste("mae.nn",i-1,sep="."), temp.mae)
-      assign(paste("rmse.nn",i-1,sep="."), temp.rmse)
-      assign(paste("mse.nn",i-1,sep="."), temp.mse)
-      
-      
-      #check if this mape is less than a previous one.
-      if( get(paste("min.mape.", i-1, sep="")) > get(paste("mape.nn",i-1,sep=".")) ) {
+        cat("\n\n tuning model: Load.",i-1,"with full features and hiddenLayerNeurons = ", hiddenLayerNeurons," maxitValue = ", maxitValue," \n")
         
-        cat("\n\n ***New best paramenters for Load.", i-1, " model***\n")
-        cat(get(paste("mape.nn",i-1,sep=".")),"\n")
-        
-        cat("new best hiddenLayerNeurons: ", hiddenLayerNeurons,"\n")
-        cat("new best maxitValue: ",maxitValue,"\n")
+        list.of.features = full.list.of.features
         
         
-        assign(paste("min.mape.", i-1, sep=""), get(paste("mape.nn",i-1,sep=".")))
+        #create the predictor variables from training
+        FeaturesVariables = 
+          trainSet[list.of.features]
         
         
-        best.nn.parameters.full[[paste("best.nn.param.", i-1, sep="")]] = c(hiddenLayerNeurons, maxitValue, get(paste("mape.nn",i-1,sep=".")), get(paste("mae.nn",i-1,sep=".")), get(paste("rmse.nn",i-1,sep=".")), get(paste("mse.nn",i-1,sep=".")))
-        names(best.nn.parameters.full[[paste("best.nn.param.", i-1, sep="")]]) = list("hiddenLayerNeurons", "maxitValue", paste("mape.nn",i-1,sep="."), paste("mae.nn",i-1,sep="."), paste("rmse.nn",i-1,sep="."), paste("mse.nn",i-1,sep="."))
+        
+        #add the response variable in trainSet
+        FeaturesVariables[paste("Loads", i-1, sep=".")] = 
+          trainSet[paste("Loads", i-1, sep=".")]
         
         
-        best.nn.fit.full[[paste("fit.nn", i-1, sep=".")]] = get(paste("fit.nn",i-1, sep="."))
+        #scaling the train set####
+        #scale the train and test set to[0,1] values
         
-        best.nn.prediction.full[[paste("prediction.nn",i-1,sep=".")]] = get(paste("prediction.nn",i-1, sep="."))
+        #convert all factors to numeric
+        FeaturesVariables.scale = data.matrix(FeaturesVariables)
+        
+        # normalize features into [0,1]
+        FeaturesVariables.scale = normalizeData(FeaturesVariables.scale, type = "0_1")
+        FeaturesVariables.scale = as.data.frame(FeaturesVariables.scale)
+        colnames(FeaturesVariables.scale) = colnames(FeaturesVariables)
+        
+        
+        #train a model####
+        ssign(paste("fit.nn", i-1, sep="."), 
+              mlp(FeaturesVariables.scale[-grep(paste("^Loads", i-1, sep="."), names(FeaturesVariables.scale))], FeaturesVariables.scale[paste("Loads", i-1, sep=".")], hiddenLayerNeurons, 
+                  maxit = maxitValue, initFuncParams = 0, learnFuncParams = learningRateValue, shufflePatterns = F, linOut = T, learnFunc = "Rprop"))
+        
+        
+        FeaturesVariables[paste("Loads", i-1, sep=".")] = NULL
+        
+        
+        
+        #create the predictor.df data.frame for predictions####
+        FeaturesVariables = 
+          trainSet[list.of.features]
+        
+        predictor.df = data.frame()
+        predictor.df = FeaturesVariables[0, ]
+        predictor.df = rbind(predictor.df, evaluationSet[names(evaluationSet) %in% names(predictor.df)])
+        
+        
+        #scale the predictor.df data for prediction
+        predictor.df.scale = data.matrix(predictor.df)
+        predictor.df.scale = normalizeData(predictor.df.scale, type = "0_1")
+        predictor.df.scale = as.data.frame(predictor.df.scale)
+        colnames(predictor.df.scale) = colnames(predictor.df)
+        
+        
+        #make the prediction
+        assign(paste("prediction.nn", i-1, sep="."), predict(get(paste("fit.nn",i-1,sep=".")), predictor.df.scale))
+        
+        
+        #denormalize the predictions
+        load.scale = evaluationSet[paste("Loads", i-1, sep=".")]
+        load.scale = normalizeData(load.scale, type="0_1")
+        #load.scale = scale(load.scale, center = min(load.scale), scale = max(load.scale) - min(load.scale))
+        
+        aux.prediction.nn = get(paste("prediction.nn", i-1, sep="."))
+        #aux.prediction.nn = aux.prediction.nn * attr(load.scale, 'scaled:scale') + attr(load.scale, 'scaled:center')
+        aux.prediction.nn = denormalizeData(aux.prediction.nn, getNormParameters(load.scale))
+        
+        assign(paste("prediction.nn", i-1, sep="."), aux.prediction.nn)
+        
+        
+        #calculate mape
+        temp.mape = 100 * mean(unlist(abs((get("evaluationSet")[paste("Loads", i-1, sep=".")] - get(paste("prediction.nn", i-1, sep=".")))/get("evaluationSet")[paste("Loads", i-1, sep=".")])))
+        cat("mape = ", temp.mape,"\n\n")
+        
+        
+        temp.mae =  mean(unlist(abs((get("evaluationSet")[paste("Loads", i-1, sep=".")] - get(paste("prediction.nn", i-1, sep=".")))/get("evaluationSet")[paste("Loads", i-1, sep=".")])))
+        
+        
+        temp.rmse = sqrt(mean(unlist(abs((get("evaluationSet")[paste("Loads", i-1, sep=".")] - get(paste("prediction.nn", i-1, sep=".")))/get("evaluationSet")[paste("Loads", i-1, sep=".")]))^2))
+        
+        
+        temp.mse = mean(unlist(abs((get("evaluationSet")[paste("Loads", i-1, sep=".")] - get(paste("prediction.nn", i-1, sep=".")))/get("evaluationSet")[paste("Loads", i-1, sep=".")]))^2)
+        
+        
+        assign(paste("mape.nn",i-1,sep="."), temp.mape)
+        assign(paste("mae.nn",i-1,sep="."), temp.mae)
+        assign(paste("rmse.nn",i-1,sep="."), temp.rmse)
+        assign(paste("mse.nn",i-1,sep="."), temp.mse)
+        
+        
+        #check if this mape is less than a previous one.
+        if( get(paste("min.mape.", i-1, sep="")) > get(paste("mape.nn",i-1,sep=".")) ) {
+          
+          cat("\n\n ***New best paramenters for Load.", i-1, " model***\n")
+          cat(get(paste("mape.nn",i-1,sep=".")),"\n")
+          
+          cat("new best learningRate: ", learningRateValue,"\n")
+          cat("new best hiddenLayerNeurons: ", hiddenLayerNeurons,"\n")
+          cat("new best maxitValue: ",maxitValue,"\n")
+          
+          
+          assign(paste("min.mape.", i-1, sep=""), get(paste("mape.nn",i-1,sep=".")))
+          
+          
+          best.nn.parameters.fs[[paste("best.nn.param.", i-1, sep="")]] = c(learningRateValue, hiddenLayerNeurons, maxitValue, get(paste("mape.nn",i-1,sep=".")), get(paste("mae.nn",i-1,sep=".")), get(paste("rmse.nn",i-1,sep=".")), get(paste("mse.nn",i-1,sep=".")))
+          names(best.nn.parameters.fs[[paste("best.nn.param.", i-1, sep="")]]) = list("learningRate", "hiddenLayerNeurons", "maxitValue", paste("mape.nn",i-1,sep="."), paste("mae.nn",i-1,sep="."), paste("rmse.nn",i-1,sep="."), paste("mse.nn",i-1,sep="."))
+          
+          
+          best.nn.fit.fs[[paste("fit.nn", i-1, sep=".")]] = get(paste("fit.nn",i-1, sep="."))
+          
+          best.nn.prediction.fs[[paste("prediction.nn",i-1,sep=".")]] = get(paste("prediction.nn",i-1, sep="."))
+          
+        }
+        
+        cat("elapsed time in minutes: ", (proc.time()[3]-startTime)/60,"\n")
+        
+        
+        
+        #saving each tuning experiments####
+        if (!exists("experiments.nn.ms")) {
+          
+          experiments.nn.ms = data.frame("mape" = NA, "mae" = NA, "mse" = NA, "rmse" = NA, "features" = NA, "dataset" = NA, "learningRate" = NA, "hiddenLayerNeurons" = NA, "maxitValue" = NA, "algorithm" = NA, "model" = NA, "date" = NA) 
+          
+          experiments.nn.ms$features = list(list.of.features)
+          
+          if(length(list.of.features) != length(full.list.of.features))
+            experiments.nn.ms$dataset = "feature selection"
+          else
+            experiments.nn.ms$dataset = "full.list.of.features"
+          
+          experiments.nn.ms$mape = temp.mape
+          experiments.nn.ms$mae = temp.mae
+          experiments.nn.ms$mse = temp.mse
+          experiments.nn.ms$rmse = temp.rmse
+          experiments.nn.ms$learningRate = learningRateValue
+          experiments.nn.ms$hiddenLayerNeurons = hiddenLayerNeurons
+          experiments.nn.ms$maxitValue = maxitValue
+          experiments.nn.ms$algorithm = "mlp"
+          experiments.nn.ms$model = paste("Loads.", i-1, sep="")
+          experiments.nn.ms$date = format(Sys.time(), "%d-%m-%y %H:%M:%S")
+          
+        } else {
+          temp = data.frame("mape" = NA, "mae" = NA, "mse" = NA, "rmse" = NA, "features" = NA, "dataset" = NA, "hiddenLayerNeurons" = NA, "maxitValue" = NA, "algorithm" = NA, "model" = NA, "date" = NA) 
+          
+          temp$features = list(list.of.features)
+          
+          
+          if(length(list.of.features) != length(full.list.of.features))
+            temp$dataset = "feature selection"
+          else
+            temp$dataset = "full.list.of.features"
+          
+          
+          temp$mape = temp.mape
+          temp$mae = temp.mae
+          temp$mse = temp.mse
+          temp$rmse = temp.rmse
+          temp$learningRate = learningRateValue
+          temp$hiddenLayerNeurons = hiddenLayerNeurons
+          temp$maxitValue = maxitValue
+          temp$algorithm = "mlp"
+          temp$model = paste("Loads.", i-1, sep="")
+          temp$date = format(Sys.time(), "%d-%m-%y %H:%M:%S")
+          
+          experiments.nn.ms = rbind(experiments.nn.ms, temp)
+          rm(temp)
+        }
         
       }
-      
-      cat("elapsed time in minutes: ", (proc.time()[3]-startTime)/60,"\n")
-      
-      
-      
-      #saving each tuning experiments####
-      if (!exists("experiments.nn.ms")) {
-        
-        experiments.nn.ms = data.frame("mape" = NA, "mae" = NA, "mse" = NA, "rmse" = NA, "features" = NA, "method" = NA, "hiddenLayerNeurons" = NA, "maxitValue" = NA, "algorithm" = NA, "model" = NA, "date" = NA) 
-        
-        experiments.nn.ms$features = list(list.of.features)
-        
-        if(length(list.of.features) != length(full.list.of.features))
-          experiments.nn.ms$method = "feature selection"
-        else
-          experiments.nn.ms$method = "full.list.of.features"
-        
-        experiments.nn.ms$mape = temp.mape
-        experiments.nn.ms$mae = temp.mae
-        experiments.nn.ms$mse = temp.mse
-        experiments.nn.ms$rmse = temp.rmse
-        experiments.nn.ms$hiddenLayerNeurons = hiddenLayerNeurons
-        experiments.nn.ms$maxitValue = maxitValue
-        experiments.nn.ms$algorithm = "nnet"
-        experiments.nn.ms$model = paste("Loads.", i-1, sep="")
-        experiments.nn.ms$date = format(Sys.time(), "%d-%m-%y %H:%M")
-        
-      } else {
-        temp = data.frame("mape" = NA, "mae" = NA, "mse" = NA, "rmse" = NA, "features" = NA, "method" = NA, "hiddenLayerNeurons" = NA, "maxitValue" = NA, "algorithm" = NA, "model" = NA, "date" = NA) 
-        
-        temp$features = list(list.of.features)
-        
-        
-        if(length(list.of.features) != length(full.list.of.features))
-          temp$method = "feature selection"
-        else
-          temp$method = "full.list.of.features"
-        
-        
-        temp$mape = temp.mape
-        temp$mae = temp.mae
-        temp$mse = temp.mse
-        temp$rmse = temp.rmse
-        temp$hiddenLayerNeurons = hiddenLayerNeurons
-        temp$maxitValue = maxitValue
-        temp$algorithm = "nnet"
-        temp$model = paste("Loads.", i-1, sep="")
-        temp$date = format(Sys.time(), "%d-%m-%y %H:%M")
-        
-        experiments.nn.ms = rbind(experiments.nn.ms, temp)
-        rm(temp)
-      }
-      
     }
   }
-  
   
 } #end of tuning####
 
@@ -224,8 +228,7 @@ fit.nn.full.ms = list()
 for(i in 1:24) {
   
   
-  list.of.features = 
-    getSelectedAttributes(final.boruta.list2[[i]], withTentative = F)
+  list.of.features = full.list.of.features
   
   cat("\n\n training after evaluation model: Load.",i-1,"with best hiddenLayerNeurons = ", best.nn.parameters.full[[i]][["hiddenLayerNeurons"]]," maxitValue = ", best.nn.parameters.full[[i]][["maxitValue"]]," \n")
   
@@ -254,7 +257,8 @@ for(i in 1:24) {
   
   #train a model####
   assign(paste("fit.nn", i-1, sep="."), 
-         nnet(as.formula(paste("Loads.", i-1, "~.", sep="")), data = FeaturesVariables.scale, size = best.nn.parameters.full[[i]][["hiddenLayerNeurons"]], trace = FALSE, MaxNWts = 1000000, abstol = 1.0e-4, maxit = best.nn.parameters.full[[i]][["maxitValue"]], linout=TRUE, rang = 0))
+         mlp(FeaturesVariables.scale[-grep(paste("^Loads", i-1, sep="."), names(FeaturesVariables.scale))], FeaturesVariables.scale[paste("Loads", i-1, sep=".")], size=best.nn.parameters.fs[[paste("best.nn.param.", i-1, sep="")]][["hiddenLayerNeurons"]], 
+             maxit = best.nn.parameters.fs[[paste("best.nn.param.", i-1, sep="")]][["maxitValue"]], initFuncParams = 0, learnFuncParams = best.nn.parameters.fs[[paste("best.nn.param.", i-1, sep="")]][["learningRate"]], shufflePatterns = F, linOut = T, learnFunc = "Rprop"))
   
   
   FeaturesVariables[paste("Loads", i-1, sep=".")] = NULL
