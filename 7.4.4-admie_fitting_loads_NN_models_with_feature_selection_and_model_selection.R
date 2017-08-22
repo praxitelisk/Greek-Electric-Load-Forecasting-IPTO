@@ -35,7 +35,7 @@ for(i in 1:24) {
   
   assign(paste("min.mape.", i-1, sep=""), 1000000)
   
-  for(learningRateValue in seq(0.05, 0.9, 0.05)) {
+  for(learningRateValue in seq(0.1, 0.5, 0.1)) {
     for(hiddenLayerNeurons in seq(2, 10, 1)) {
       for(maxitValue in seq(100, 1000, 100)) {
         
