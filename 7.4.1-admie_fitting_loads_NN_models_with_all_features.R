@@ -29,12 +29,34 @@ mae.nn.full.def = list()
 rmse.nn.full.def = list()
 mse.nn.full.def = list()
 
+
+mean.nn.full.rate = 0
+for(i in 1:length(best.nn.parameters.fs)) {
+  mean.nn.full.rate = mean.nn.full.rate + best.nn.parameters.fs[[i]][1]
+}
+mean.nn.full.rate = mean.nn.full.rate/length(best.nn.parameters.fs)
+
+
+mean.nn.full.hiddenNeurons = 0
+for(i in 1:length(best.nn.parameters.fs)) {
+  mean.nn.full.hiddenNeurons = mean.nn.full.hiddenNeurons + best.nn.parameters.fs[[i]][2]
+}
+mean.nn.full.hiddenNeurons = round(mean.nn.full.hiddenNeurons/length(best.nn.parameters.fs))
+
+
+mean.nn.full.maxit = 0
+for(i in 1:length(best.nn.parameters.fs)) {
+  mean.nn.full.maxit = mean.nn.full.maxit + best.nn.parameters.fs[[i]][3]
+}
+mean.nn.full.maxit = round(mean.nn.full.maxit/length(best.nn.parameters.fs))
+
+
 for(i in 1:24) {
   
   
   list.of.features = full.list.of.features
   
-  cat("\n\n nn training  model: Load.",i-1," with default parameters and full features \n", sep = "")
+  cat("\n\n nn training  model: Load.",i-1," with default parameters hiddenLayerNeurons = ", mean.nn.full.hiddenNeurons, " maxit = ", mean.nn.full.maxit , "rate = ", mean.nn.full.rate ,"and full features \n", sep = "")
   
   
   #create the predictor variables from training
@@ -61,7 +83,8 @@ for(i in 1:24) {
   
   #train a model####
   assign(paste("fit.nn", i-1, sep="."), 
-         nnet(as.formula(paste("Loads.", i-1, "~.", sep="")), data = FeaturesVariables.scale, size = 5, rang = 0, trace = F, MaxNWts = 1000000, abstol = 1.0e-5))
+         mlp(FeaturesVariables.scale[-grep(paste("^Loads", i-1, sep="."), names(FeaturesVariables.scale))], FeaturesVariables.scale[paste("Loads", i-1, sep=".")], size =  mean.nn.full.hiddenNeurons, 
+             maxit = mean.nn.full.maxit, initFuncParams = 0, learnFuncParams = mean.nn.full.rate, shufflePatterns = F, linOut = T, learnFunc = "Rprop"))
   
   
   FeaturesVariables[paste("Loads", i-1, sep=".")] = NULL
