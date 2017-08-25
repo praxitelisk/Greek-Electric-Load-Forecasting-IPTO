@@ -37,7 +37,7 @@ for(i in 1:24) {
   
   for(learningRateValue in seq(0.1, 0.5, 0.1)) {
     for(hiddenLayerNeurons in seq(2, 10, 1)) {
-      for(maxitValue in seq(100, 1000, 100)) {
+      for(maxitValue in seq(100, 300, 100)) {
         
         cat("\n\n tuning model: Load.",i-1,"with feature selection and learning rate ", learningRateValue," hiddenLayerNeurons = ", hiddenLayerNeurons," maxitValue = ", maxitValue," \n")
         

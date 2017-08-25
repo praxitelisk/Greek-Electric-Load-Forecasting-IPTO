@@ -3,7 +3,6 @@
 ##############################################################
 
 #load the libraries####
-library("Boruta")
 library("e1071")
 
 #start measuring time#####
@@ -130,14 +129,14 @@ for(i in 1:24) {
       #saving each tuning experiments####
       if (!exists("experiments.svm.ms")) {
         
-        experiments.svm.ms = data.frame("mape" = NA, "mae" = NA, "mse" = NA, "rmse" = NA, "features" = NA, "method" = NA, "gamma" = NA, "cost" = NA, "algorithm" = NA, "model" = NA) 
+        experiments.svm.ms = data.frame("mape" = NA, "mae" = NA, "mse" = NA, "rmse" = NA, "features" = NA, "dataset" = NA, "gamma" = NA, "cost" = NA, "algorithm" = NA, "model" = NA, "date" = NA) 
         
         experiments.svm.ms$features = list(list.of.features)
         
         if(length(list.of.features) != length(full.list.of.features))
-          experiments.svm.ms$method = "feature selection"
+          experiments.svm.ms$dataset = "feature selection"
         else
-          experiments.svm.ms$method = "full.list.of.features"
+          experiments.svm.ms$dataset = "full.list.of.features"
         
         experiments.svm.ms$mape = temp.mape
         experiments.svm.ms$mae = temp.mae
@@ -147,17 +146,18 @@ for(i in 1:24) {
         experiments.svm.ms$cost = costValue
         experiments.svm.ms$algorithm = "svm"
         experiments.svm.ms$model = paste("Loads.", i-1, sep="")
+        experiments.svm.ms$date = format(Sys.time(), "%d-%m-%y %H:%M:%S")
         
       } else {
-        temp = data.frame("mape" = NA, "mae" = NA, "mse" = NA, "rmse" = NA, "features" = NA, "method" = NA, "gamma" = NA, "cost" = NA, "algorithm" = NA, "model" = NA, "date" = NA)
+        temp = data.frame("mape" = NA, "mae" = NA, "mse" = NA, "rmse" = NA, "features" = NA, "dataset" = NA, "gamma" = NA, "cost" = NA, "algorithm" = NA, "model" = NA, "date" = NA)
         
         temp$features = list(list.of.features)
         
         
         if(length(list.of.features) != length(full.list.of.features))
-          temp$method = "feature selection"
+          temp$dataset = "feature selection"
         else
-          temp$method = "full.list.of.features"
+          temp$dataset = "full.list.of.features"
         
         
         temp$mape = temp.mape
@@ -168,6 +168,7 @@ for(i in 1:24) {
         temp$cost = costValue
         temp$algorithm = "svm"
         temp$model = paste("Loads.", i-1, sep="")
+        temp$date = format(Sys.time(), "%d-%m-%y %H:%M:%S")
         
         experiments.svm.ms = rbind(experiments.svm.ms, temp)
         rm(temp)
@@ -193,8 +194,7 @@ fit.svm.full.ms = list()
 for(i in 1:24) {
   
   
-  list.of.features = 
-    getSelectedAttributes(final.boruta.list2[[i]], withTentative = F)
+  list.of.features = full.list.of.features
   
   cat("\n\n training after evaluation model: Load.",i-1,"with best gamma = ", best.svm.parameters.fs[[i]][["gamma"]]," cost = ", best.svm.parameters.fs[[i]][["cost"]]," \n")
   

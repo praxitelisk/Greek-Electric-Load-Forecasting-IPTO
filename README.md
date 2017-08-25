@@ -11,8 +11,7 @@ http://www.admie.gr/nc/en/home/
   <li>Feature Selection, library: install.package("Boruta")</li>
   <li>SVM models, library: install.package("e1071")</li>
   <li>Random Forest, library: install.package("RandomForest")</li>
-  <li>Neural Network, library: install.package("nnet")</li>
-  <li>Neural Network, auxiliary library: install.package("RSNNS")</li>
+  <li>Neural Network, library: install.package("RSNNS")</li>
   <li>K' Nearest Neighbors, library: install.package("FNN")</li>
   <li>Rule Based Models, library: install.package("Cubist")</li>
   <li>xgboost models, library: install.package("xgboost")</li>

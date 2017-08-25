@@ -29,12 +29,33 @@ mae.nn.fs.def = list()
 rmse.nn.fs.def = list()
 mse.nn.fs.def = list()
 
+
+mean.nn.fs.rate = 0
+for(i in 1:length(best.nn.parameters.fs)) {
+  mean.nn.fs.rate = mean.nn.fs.rate + best.nn.parameters.fs[[i]][1]
+}
+mean.nn.fs.rate = mean.nn.fs.rate/length(best.nn.parameters.fs)
+
+
+mean.nn.fs.hiddenNeurons = 0
+for(i in 1:length(best.nn.parameters.fs)) {
+  mean.nn.fs.hiddenNeurons = mean.nn.fs.hiddenNeurons + best.nn.parameters.fs[[i]][2]
+}
+mean.nn.fs.hiddenNeurons = round(mean.nn.fs.hiddenNeurons/length(best.nn.parameters.fs))
+
+
+mean.nn.fs.maxit = 0
+for(i in 1:length(best.nn.parameters.fs)) {
+  mean.nn.fs.maxit = mean.nn.fs.maxit + best.nn.parameters.fs[[i]][3]
+}
+mean.nn.fs.maxit = round(mean.nn.fs.maxit/length(best.nn.parameters.fs))
+
 for(i in 1:24) {
   
   
   list.of.features = getSelectedAttributes(final.boruta.list2[[i]], withTentative = F)
   
-  cat("\n\n training  model: Load.",i-1," with default parameters and feature selection \n", sep = "")
+  cat("\n\n nn training model: Load.",i-1," with default parameters hiddenLayerNeurons = ", mean.nn.full.hiddenNeurons, " maxit = ", mean.nn.full.maxit , " rate = ", mean.nn.full.rate ," and feature selection \n", sep = "")
   
   
   #create the predictor variables from training

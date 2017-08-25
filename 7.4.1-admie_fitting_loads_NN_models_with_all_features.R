@@ -56,7 +56,7 @@ for(i in 1:24) {
   
   list.of.features = full.list.of.features
   
-  cat("\n\n nn training  model: Load.",i-1," with default parameters hiddenLayerNeurons = ", mean.nn.full.hiddenNeurons, " maxit = ", mean.nn.full.maxit , "rate = ", mean.nn.full.rate ,"and full features \n", sep = "")
+  cat("\n\n nn training model: Load.",i-1," with default parameters hiddenLayerNeurons = ", mean.nn.full.hiddenNeurons, " maxit = ", mean.nn.full.maxit , " rate = ", mean.nn.full.rate ," and full features \n", sep = "")
   
   
   #create the predictor variables from training

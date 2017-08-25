@@ -29,11 +29,26 @@ mse.svm.full.def = list()
 prediction.svm.full.def = list()
 fit.svm.full.def = list()
 
+
+mean.svm.full.gamma = 0
+for(i in 1:length(best.svm.parameters.fs)) {
+  mean.svm.full.gamma = mean.svm.full.gamma + best.svm.parameters.fs[[i]][1]
+}
+mean.svm.full.gamma = mean.svm.full.gamma/length(best.svm.parameters.fs)
+
+
+mean.svm.full.cost = 0
+for(i in 1:length(best.svm.parameters.fs)) {
+  mean.svm.full.cost = mean.svm.full.cost + best.svm.parameters.full[[i]][2]
+}
+mean.svm.full.cost = round(mean.svm.full.cost/length(best.svm.parameters.full),3)
+
+
 #tuning svm parameters per 24hour model####
 for(i in 1:24) {
   
   
-  cat("\n\n svm training  model: Load.",i-1," with default parameters and full features \n", sep = "")
+  cat("\n\n svm training  model: Load.",i-1," with default parameters gamma = ", mean.svm.full.gamma ," cost = ", mean.svm.full.cost ," and feature selection \n", sep = "")
   
   list.of.features = full.list.of.features
   
@@ -50,7 +65,7 @@ for(i in 1:24) {
   
   #train a model####
   assign(paste("fit.svm", i-1, sep="."), 
-         svm(as.formula(paste("Loads.", i-1, "~.", sep="")), data = FeaturesVariables))
+         svm(as.formula(paste("Loads.", i-1, "~.", sep="")), data = FeaturesVariables, gamma = mean.svm.full.gamma, cost = mean.svm.full.cost))
   
   
   FeaturesVariables[paste("Loads", i-1, sep=".")] = NULL
@@ -100,9 +115,7 @@ for(i in 1:24) {
   mse.svm.full.def[[paste("mse.svm",i-1,sep=".")]] = temp.mse
   rmse.svm.full.def[[paste("rmse.svm",i-1,sep=".")]] = temp.rmse
   
-  
-  
-  
+
   
   cat("elapsed time in minutes: ", (proc.time()[3] - startTime)/60,"\n")
   
