@@ -30,18 +30,18 @@ prediction.svm.fs.def = list()
 fit.svm.fs.def = list()
 
 
-mean.svm.fs.gamma = 0
-for(i in 1:length(best.svm.parameters.fs)) {
-  mean.svm.fs.gamma = mean.svm.fs.gamma + best.svm.parameters.fs[[i]][1]
-}
-mean.svm.fs.gamma = mean.svm.fs.gamma/length(best.svm.parameters.fs)
-
-
-mean.svm.fs.cost = 0
-for(i in 1:length(best.svm.parameters.fs)) {
-  mean.svm.fs.cost = mean.svm.fs.cost + best.svm.parameters.fs[[i]][2]
-}
-mean.svm.fs.cost = round(mean.svm.fs.cost/length(best.svm.parameters.fs),3)
+# mean.svm.fs.gamma = 0
+# for(i in 1:length(best.svm.parameters.fs)) {
+#   mean.svm.fs.gamma = mean.svm.fs.gamma + best.svm.parameters.fs[[i]][1]
+# }
+# mean.svm.fs.gamma = mean.svm.fs.gamma/length(best.svm.parameters.fs)
+# 
+# 
+# mean.svm.fs.cost = 0
+# for(i in 1:length(best.svm.parameters.fs)) {
+#   mean.svm.fs.cost = mean.svm.fs.cost + best.svm.parameters.fs[[i]][2]
+# }
+# mean.svm.fs.cost = round(mean.svm.fs.cost/length(best.svm.parameters.fs),3)
 
 
 #tuning svm parameters per 24hour model####
@@ -66,7 +66,7 @@ for(i in 1:24) {
   
   #train a model####
   assign(paste("fit.svm", i-1, sep="."), 
-         svm(as.formula(paste("Loads.", i-1, "~.", sep="")), data = FeaturesVariables, gamma = mean.svm.fs.gamma, cost = mean.svm.fs.cost))
+         svm(as.formula(paste("Loads.", i-1, "~.", sep="")), data = FeaturesVariables))
   
   
   FeaturesVariables[paste("Loads", i-1, sep=".")] = NULL

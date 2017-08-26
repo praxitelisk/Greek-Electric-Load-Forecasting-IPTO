@@ -30,18 +30,18 @@ prediction.svm.full.def = list()
 fit.svm.full.def = list()
 
 
-mean.svm.full.gamma = 0
-for(i in 1:length(best.svm.parameters.fs)) {
-  mean.svm.full.gamma = mean.svm.full.gamma + best.svm.parameters.fs[[i]][1]
-}
-mean.svm.full.gamma = mean.svm.full.gamma/length(best.svm.parameters.fs)
-
-
-mean.svm.full.cost = 0
-for(i in 1:length(best.svm.parameters.fs)) {
-  mean.svm.full.cost = mean.svm.full.cost + best.svm.parameters.full[[i]][2]
-}
-mean.svm.full.cost = round(mean.svm.full.cost/length(best.svm.parameters.full),3)
+# mean.svm.full.gamma = 0
+# for(i in 1:length(best.svm.parameters.fs)) {
+#   mean.svm.full.gamma = mean.svm.full.gamma + best.svm.parameters.fs[[i]][1]
+# }
+# mean.svm.full.gamma = mean.svm.full.gamma/length(best.svm.parameters.fs)
+# 
+# 
+# mean.svm.full.cost = 0
+# for(i in 1:length(best.svm.parameters.fs)) {
+#   mean.svm.full.cost = mean.svm.full.cost + best.svm.parameters.full[[i]][2]
+# }
+# mean.svm.full.cost = round(mean.svm.full.cost/length(best.svm.parameters.full),3)
 
 
 #tuning svm parameters per 24hour model####

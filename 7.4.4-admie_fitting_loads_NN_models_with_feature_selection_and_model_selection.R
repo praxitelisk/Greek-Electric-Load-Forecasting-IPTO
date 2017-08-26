@@ -376,5 +376,3 @@ rm(list=ls(pattern="rmse.nn.[0-9]"))
 rm(hiddenLayerNeurons)
 rm(learningRateValue)
 rm(maxitValue)
-
-
