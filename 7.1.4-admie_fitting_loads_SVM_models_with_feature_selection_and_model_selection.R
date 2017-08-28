@@ -59,6 +59,7 @@ for(i in 1:24) {
       
       
       #train a model####
+      set.seed(123)
       assign(paste("fit.svm", i-1, sep="."), 
              svm(as.formula(paste("Loads.", i-1, "~.", sep="")), data = FeaturesVariables, cost = costValue, gamma = gammaValue))
       
@@ -213,6 +214,7 @@ for(i in 1:24) {
   
   
   #train a model####
+  set.seed(123)
   assign(paste("fit.svm", i-1, sep="."), 
          svm(as.formula(paste("Loads.", i-1, "~.", sep="")), data = FeaturesVariables, cost = best.svm.parameters.fs[[i]][["cost"]], gamma = best.svm.parameters.fs[[i]][["gamma"]]))
   
