@@ -55,6 +55,7 @@ for(i in 1:24) {
         dtrain <- xgb.DMatrix(data = data.matrix(FeaturesVariables), label=trainSet[[paste("Loads", i-1, sep=".")]])
         
         
+        set.seed(123)
         assign(paste("fit.xgboost", i-1, sep="."), 
                xgboost(data = dtrain, max_depth = depthValue, eta = etaValue, nrounds = roundValue, nthread = 2, verbose = 0, booster= "gbtree", objective = "reg:linear"))
         
@@ -204,6 +205,7 @@ for(i in 1:24) {
   dtrain <- xgb.DMatrix(data = data.matrix(FeaturesVariables), label=train.and.evalSet[[paste("Loads", i-1, sep=".")]])
   
   
+  set.seed(123)
   assign(paste("fit.xgboost", i-1, sep="."), 
          xgboost(data = dtrain, max_depth = best.xgboost.parameters.fs[[paste("best.xgboost.param.", i-1, sep="")]][["depth"]], eta = best.xgboost.parameters.fs[[paste("best.xgboost.param.", i-1, sep="")]][["eta"]], nrounds = best.xgboost.parameters.fs[[paste("best.xgboost.param.", i-1, sep="")]][["round"]], nthread = 2, verbose = 0, booster= "gbtree", objective = "reg:linear"))
   
