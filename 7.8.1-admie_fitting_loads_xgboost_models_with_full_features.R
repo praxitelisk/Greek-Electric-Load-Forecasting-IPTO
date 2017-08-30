@@ -4,7 +4,6 @@
 
 #load the libraries####
 library("xgboost")
-library("e1071")
 
 #start measuring time#####
 startTime <- proc.time()[3]
@@ -30,32 +29,18 @@ prediction.xgboost.full.def = list()
 fit.xgboost.full.def = list()
 
 
-mean.xgboost.full.eta = 0
-for(i in 1:length(best.xgboost.parameters.full)) {
-  mean.xgboost.full.eta = mean.xgboost.full.eta + best.xgboost.parameters.full[[i]][1]
-}
-mean.xgboost.full.eta = mean.xgboost.full.eta/length(best.xgboost.parameters.full)
-
-
-mean.xgboost.full.depth = 0
-for(i in 1:length(best.xgboost.parameters.full)) {
-  mean.xgboost.full.depth = mean.xgboost.full.depth + best.xgboost.parameters.full[[i]][2]
-}
-mean.xgboost.full.depth = round(mean.xgboost.full.depth/length(best.xgboost.parameters.full),3)
-
-
 mean.xgboost.full.round = 0
 for(i in 1:length(best.xgboost.parameters.full)) {
   mean.xgboost.full.round = mean.xgboost.full.round + best.xgboost.parameters.full[[i]][3]
 }
-mean.xgboost.full.round = round(mean.xgboost.full.round/length(best.xgboost.parameters.full),3)
+mean.xgboost.full.round = round(mean.xgboost.full.round/length(best.xgboost.parameters.full))
 
 
-#tuning svm parameters per 24hour model####
+#tuning xgboost parameters per 24hour model####
 for(i in 1:24) {
   
   
-  cat("\n\n xgboost training  model: Load.",i-1," with default parameters eta = ", mean.xgboost.full.eta ," depth = ", mean.xgboost.full.depth ," round = ", mean.xgboost.full.round ,"and feature selection \n", sep = "")
+  cat("\n\n xgboost training  model: Load.",i-1," with default parameters round = ", mean.xgboost.full.round ," and full features \n", sep = "")
   
   list.of.features = full.list.of.features
   
@@ -70,7 +55,7 @@ for(i in 1:24) {
   
   #train a model####
   assign(paste("fit.xgboost", i-1, sep="."), 
-         xgboost(data = dtrain, max_depth = mean.xgboost.full.depth, eta = mean.xgboost.full.eta, nrounds = mean.xgboost.full.round, nthread = 2, verbose = 0, booster= "gbtree", objective = "reg:linear"))
+         xgboost(data = dtrain, nrounds = mean.xgboost.full.round, nthread = 2, verbose = 0, booster= "gbtree", objective = "reg:linear"))
   
   
   
@@ -84,7 +69,7 @@ for(i in 1:24) {
   
   
   #make the prediction
-  assign(paste("prediction.xgboost", i-1, sep="."), predict(get(paste("fit.svm",i-1,sep=".")), data.matrix(predictor.df)))
+  assign(paste("prediction.xgboost", i-1, sep="."), predict(get(paste("fit.xgboost",i-1,sep=".")), data.matrix(predictor.df)))
   
   
   #calculate mape
@@ -147,11 +132,12 @@ cat("mean xgboost rmse: ", round(mean.rmse.xgboost.full.def, 5), "\n")
 cat("elapsed time in minutes: ", (proc.time()[3] - startTime)/60,"\n")
 
 
-rm(list=ls(pattern="fit.svm.[0-9]"))
-rm(list=ls(pattern="prediction.svm.[0-9]"))
-rm(list=ls(pattern="mape.svm.[0-9]"))
-rm(list=ls(pattern="mae.svm.[0-9]"))
-rm(list=ls(pattern="mse.svm.[0-9]"))
-rm(list=ls(pattern="rmse.svm.[0-9]"))
+rm(list=ls(pattern="fit.xgboost.[0-9]"))
+rm(list=ls(pattern="prediction.xgboost.[0-9]"))
+rm(list=ls(pattern="mape.xgboost.[0-9]"))
+rm(list=ls(pattern="mae.xgboost.[0-9]"))
+rm(list=ls(pattern="mse.xgboost.[0-9]"))
+rm(list=ls(pattern="rmse.xgboost.[0-9]"))
 rm(list=ls(pattern="temp."))
 rm(i)
+rm(dtrain)
