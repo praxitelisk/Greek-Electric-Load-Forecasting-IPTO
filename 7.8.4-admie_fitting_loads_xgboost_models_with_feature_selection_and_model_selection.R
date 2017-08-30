@@ -57,7 +57,7 @@ for(i in 1:24) {
         
         set.seed(123)
         assign(paste("fit.xgboost", i-1, sep="."), 
-               xgboost(data = dtrain, max_depth = depthValue, eta = etaValue, nrounds = roundValue, nthread = 2, verbose = 0, booster= "gbtree", objective = "reg:linear"))
+               xgboost(data = dtrain, max_depth = depthValue, eta = etaValue, nrounds = roundValue, nthread = 2, verbose = 0, booster= "gbtree", objective = "reg:linear", nthread = 2))
         
   
         #create the predictor.df data.frame for predictions####
