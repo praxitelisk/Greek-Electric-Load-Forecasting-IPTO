@@ -1,5 +1,5 @@
 # Greek-Electric-Load-Forecasting-IPTO
-Greek Electric Load Forecasting using R, RStudio and RShiny using daily load datasets provided by the Greek Independent Power Transmission Operator (IPTO) - (AΔΜΙΕ in greek)
+Greek Electric Load Forecasting with R, RStudio and RShiny using daily load datasets provided by the Greek Independent Power Transmission Operator (IPTO) - (AΔΜΙΕ in greek)
 http://www.admie.gr/nc/en/home/
 
 <b>libraries - Dependencies</b>
