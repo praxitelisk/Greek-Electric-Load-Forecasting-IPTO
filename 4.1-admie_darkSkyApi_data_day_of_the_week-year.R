@@ -8,13 +8,13 @@ library(lubridate) # for yday command
 #get the name of each day by name 
 day.of.week = weekdays(darkSky.WeatherData$time)
 
-day.of.week[day.of.week=="Κυριακή"] = 0
-day.of.week[day.of.week=="Δευτέρα"] = 1
-day.of.week[day.of.week=="Τρίτη"] = 2
-day.of.week[day.of.week=="Τετάρτη"] = 3
-day.of.week[day.of.week=="Πέμπτη"] = 4
-day.of.week[day.of.week=="Παρασκευή"] = 5
-day.of.week[day.of.week=="Σάββατο"] = 6
+day.of.week[day.of.week=="Sunday"] = 0
+day.of.week[day.of.week=="Monday"] = 1
+day.of.week[day.of.week=="Τuesday"] = 2
+day.of.week[day.of.week=="Wednesday"] = 3
+day.of.week[day.of.week=="Thursday"] = 4
+day.of.week[day.of.week=="Friday"] = 5
+day.of.week[day.of.week=="Saturday"] = 6
 
 day.of.week = as.factor(day.of.week)
 #day.of.week = 360/7 * day.of.week

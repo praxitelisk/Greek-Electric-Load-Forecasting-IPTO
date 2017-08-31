@@ -19,8 +19,8 @@ darkSky.WeatherData$isRushHour = as.factor(darkSky.WeatherData$isRushHour)
 #isWeekend new feature####
 cat("#isWeekend new feature####\n")
 isWeekend = as.character(darkSky.WeatherData$weekday)
-isWeekend[(isWeekend == "Σάββατο") | (isWeekend == "Κυριακή")] = 1
-isWeekend[(isWeekend != "Σαββατο") & (isWeekend != "Κυριακή") & (isWeekend != 1)] = 0
+isWeekend[(isWeekend == "Saturday") | (isWeekend == "Sunday")] = 1
+isWeekend[(isWeekend != "Saturday") & (isWeekend != "Sunday") & (isWeekend != 1)] = 0
 darkSky.WeatherData =  add_column(darkSky.WeatherData, isWeekend, .after = "isRushHour")
 darkSky.WeatherData$isWeekend = as.factor(darkSky.WeatherData$isWeekend)
 
