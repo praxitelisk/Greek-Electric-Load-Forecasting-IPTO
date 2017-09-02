@@ -1,5 +1,4 @@
 library("randomForest")
-library("Boruta")
 
 
 startTime <- proc.time()[3]
@@ -27,21 +26,19 @@ for(i in 1:24) {
   
   assign(paste("min.mape.", i-1, sep=""), 1000000)
   
+  
+  list.of.features = full.list.of.features
+  
+  
+  #create the predictor variables from training
+  FeaturesVariables = 
+    trainSet[list.of.features]
+  
+  
   for (num.of.trees in seq(10, 70, 10)) {
-    for(mtry.par in seq(1, 30, 1)) {
+    for(mtry.par in seq(1, max(floor(ncol(FeaturesVariables)/3), 1), 1)) {
       
       cat("\n\n tuning model: Load.", i-1, " with num.of.trees = ", num.of.trees, " mtry = ", mtry.par,"\n\n")
-      
-      
-      list.of.features = full.list.of.features
-      
-      
-      #cat("\n randomForest model at",  i-1 ," o' clock, with the following combination of features:\n\n",list.of.features,"\n\n")
-      
-      
-      #create the predictor variables from training
-      FeaturesVariables = 
-        trainSet[list.of.features]
       
       
       FeaturesVariables[paste("Loads", i-1, sep=".")] = 
