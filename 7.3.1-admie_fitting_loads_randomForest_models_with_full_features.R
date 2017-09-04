@@ -45,7 +45,7 @@ for(i in 1:24) {
   
   set.seed(123)
   assign(paste("fit.randomForest", i-1, sep="."), 
-         randomForest(as.formula(paste("Loads.", i-1, "~.", sep="")), data = FeaturesVariables))
+         randomForest(as.formula(paste("Loads.", i-1, "~.", sep="")), data = FeaturesVariables, ntree = 20))
   
   
   FeaturesVariables[paste("Loads", i-1, sep=".")] = NULL

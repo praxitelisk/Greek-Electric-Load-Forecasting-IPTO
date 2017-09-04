@@ -1,3 +1,7 @@
+######################################################################
+#####randomForest with full features and model selection##############
+######################################################################
+
 library("randomForest")
 
 
@@ -35,7 +39,7 @@ for(i in 1:24) {
     trainSet[list.of.features]
   
   
-  for (num.of.trees in seq(10, 70, 10)) {
+  for (num.of.trees in seq(10, 20, 10)) {
     for(mtry.par in seq(1, max(floor(ncol(FeaturesVariables)/3), 1), 1)) {
       
       cat("\n\n tuning model: Load.", i-1, " with num.of.trees = ", num.of.trees, " mtry = ", mtry.par,"\n\n")

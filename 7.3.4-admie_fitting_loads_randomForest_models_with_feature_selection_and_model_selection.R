@@ -34,7 +34,7 @@ for(i in 1:24) {
   FeaturesVariables = 
     trainSet[list.of.features]
   
-  for (num.of.trees in seq(50, 500, 50)) {
+  for (num.of.trees in seq(50, 110, 50)) {
     for(mtry.par in seq(1, max(floor(ncol(FeaturesVariables)/3), 1), 1)) {
 
       cat("\n\n tuning model: Load.", i-1, " with num.of.trees = ", num.of.trees, " mtry = ", mtry.par,"\n\n")
