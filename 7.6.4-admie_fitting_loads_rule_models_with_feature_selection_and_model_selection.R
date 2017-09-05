@@ -1,0 +1,215 @@
+library("Cubist")
+library("Boruta")
+
+
+startTime <- proc.time()[3]
+
+#creating the train and test set splits####
+splitEvalSet = 365
+splitTestSet = splitEvalSet + 365
+len = dim(final.Data.Set)[1]
+
+#trainPart = floor(split * dim(final.Data.Set)[1])
+trainSet = final.Data.Set[1:(len - splitTestSet), ]
+evaluationSet = final.Data.Set[(len-splitTestSet + 1):(len - splitEvalSet), ]
+train.and.evalSet = final.Data.Set[1:(len - splitEvalSet), ]
+testSet = final.Data.Set[(len - splitEvalSet + 1):len, ]
+
+
+#if (!exists("best.rule.parameters.fs")) {
+best.rule.parameters.fs = list()
+best.rule.fit.fs = list()
+best.rule.prediction.fs = list()
+#}
+
+
+for(i in 1:24) {
+  
+  assign(paste("min.mape.", i-1, sep=""), 1000000)
+  
+  for(unbiasedFlag in 0:1) {
+  
+  
+    cat("\n\n tuning rule model: Load.", i-1 ," with unbiasedFlag ", unbiasedFlag ,"\n\n")
+    
+    list.of.features = getSelectedAttributes(final.boruta.list2[[i]], withTentative = F)
+    
+    FeaturesVariables = 
+      trainSet[list.of.features]
+    
+    
+    #add the response variable in trainSet
+    FeaturesVariables[paste("Loads", i-1, sep=".")] = 
+      trainSet[paste("Loads", i-1, sep=".")]
+    
+    
+    set.seed(123)
+    assign(paste("fit.rule", i-1, sep="."), 
+           cubist(x = FeaturesVariables[-grep(paste("^Loads", i-1, sep="."), names(FeaturesVariables))], y = FeaturesVariables[[paste("Loads", i-1, sep=".")]], committees = 1, cubistControl(unbiased = unbiasedFlag)))
+    
+    
+    FeaturesVariables = 
+      trainSet[list.of.features]
+    
+    
+    #create the predictor.df data.frame for predictions####
+    predictor.df = data.frame()
+    predictor.df = FeaturesVariables[0, ]
+    predictor.df = rbind(predictor.df, evaluationSet[names(evaluationSet) %in% names(predictor.df)])
+    
+    
+    assign(paste("prediction.rule", i-1, sep="."), predict(get(paste("fit.rule",i-1,sep=".")), predictor.df))
+    
+    
+    #calculate mape
+    temp.mape = 100 * mean(unlist(abs((get("evaluationSet")[paste("Loads", i-1, sep=".")] - get(paste("prediction.rule", i-1, sep=".")))/get("evaluationSet")[paste("Loads", i-1, sep=".")])))
+    cat("mape = ", temp.mape,"\n\n")
+    
+    temp.mae =  mean(unlist(abs((get("evaluationSet")[paste("Loads", i-1, sep=".")] - get(paste("prediction.rule", i-1, sep=".")))/get("evaluationSet")[paste("Loads", i-1, sep=".")])))
+    
+    
+    temp.rmse = sqrt(mean(unlist(abs((get("evaluationSet")[paste("Loads", i-1, sep=".")] - get(paste("prediction.rule", i-1, sep=".")))/get("evaluationSet")[paste("Loads", i-1, sep=".")]))^2))
+    
+    
+    temp.mse = mean(unlist(abs((get("evaluationSet")[paste("Loads", i-1, sep=".")] - get(paste("prediction.rule", i-1, sep=".")))/get("evaluationSet")[paste("Loads", i-1, sep=".")]))^2)
+    
+    
+    assign(paste("mape.rule",i-1,sep="."), temp.mape)
+    assign(paste("mae.rule",i-1,sep="."), temp.mae)
+    assign(paste("rmse.rule",i-1,sep="."), temp.rmse)
+    assign(paste("mse.rule",i-1,sep="."), temp.mse)
+    
+    
+    if( get(paste("min.mape.", i-1, sep="")) > get(paste("mape.rule",i-1,sep=".")) ) {
+      
+      cat("\n\n ***New best paramenters for Load.", i-1, " model***\n")
+      cat(get(paste("mape.rule",i-1,sep=".")),"\n")
+      
+      cat("new best unbiasedFlag: ", unbiasedFlag,"\n")
+      
+      
+      assign(paste("min.mape.", i-1, sep=""), get(paste("mape.rule",i-1,sep=".")))
+      
+      
+      best.rule.parameters.fs[[paste("best.rule.param.", i-1, sep="")]] = c(unbiasedFlag, get(paste("mape.rule",i-1,sep=".")), get(paste("mae.rule",i-1,sep=".")), get(paste("rmse.rule",i-1,sep=".")), get(paste("mse.rule",i-1,sep=".")))
+      names(best.rule.parameters.fs[[paste("best.rule.param.", i-1, sep="")]]) = list("unbiased", paste("mape.rule",i-1,sep="."), paste("mae.rule",i-1,sep="."), paste("rmse.rule",i-1,sep="."), paste("mse.rule",i-1,sep="."))
+      
+      
+      best.rule.fit.fs[[paste("fit.rule", i-1, sep=".")]] = get(paste("fit.rule",i-1, sep="."))
+      
+      best.rule.prediction.fs[[paste("prediction.rule",i-1,sep=".")]] = get(paste("prediction.rule",i-1, sep="."))
+      
+    }
+    
+  }
+} ###end of tuning####
+
+
+
+#create the new models after tuning and evaluation phase##################
+mape.rule.fs.ms = list()
+mae.rule.fs.ms = list()
+rmse.rule.fs.ms = list()
+mse.rule.fs.ms = list()
+prediction.rule.fs.ms = list()
+fit.rule.fs.ms = list()
+
+
+for(i in 1:24) {
+  
+  list.of.features =
+    getSelectedAttributes(final.boruta.list2[[i]], withTentative = F)
+  
+  cat("\n\n training rules after evaluation model: Load.",i-1," with best unbiasedFlag = ", best.rule.parameters.fs[[paste("best.rule.param.", i-1, sep="")]][["unbiased"]], "\n", sep="")
+  
+  #create the predictor variables from training
+  FeaturesVariables =
+    train.and.evalSet[list.of.features]
+  
+  #add the response variable in trainSet
+  FeaturesVariables[paste("Loads", i-1, sep=".")] = 
+    train.and.evalSet[paste("Loads", i-1, sep=".")]
+  
+  
+  set.seed(123)
+  assign(paste("fit.rule", i-1, sep="."), 
+         cubist(x = FeaturesVariables[-grep(paste("^Loads", i-1, sep="."), names(FeaturesVariables))], y = FeaturesVariables[[paste("Loads", i-1, sep=".")]], committees = 1, cubistControl(unbiased = best.rule.parameters.fs[[paste("best.rule.param.", i-1, sep="")]][["unbiased"]])))
+  
+  
+  FeaturesVariables[paste("Loads", i-1, sep=".")] = NULL
+  
+  
+  FeaturesVariables =
+    train.and.evalSet[list.of.features]
+  
+  
+  predictor.df = data.frame()
+  predictor.df = FeaturesVariables[0, ]
+  predictor.df = rbind(predictor.df, testSet[names(testSet) %in% names(predictor.df)])
+  
+  
+  assign(paste("prediction.rule", i-1, sep="."), predict(get(paste("fit.rule",i-1,sep=".")), predictor.df))
+  
+  
+  #calculate mape
+  temp.mape = 100 * mean(unlist(abs((get("testSet")[paste("Loads", i-1, sep=".")] - get(paste("prediction.rule", i-1, sep=".")))/get("testSet")[paste("Loads", i-1, sep=".")])))
+  cat("mape.", i-1 ," = ", temp.mape,"\n\n", sep = "")
+  
+  
+  temp.mae =  mean(unlist(abs((get("testSet")[paste("Loads", i-1, sep=".")] - get(paste("prediction.rule", i-1, sep=".")))/get("testSet")[paste("Loads", i-1, sep=".")])))
+  
+  
+  temp.rmse = sqrt(mean(unlist(abs((get("testSet")[paste("Loads", i-1, sep=".")] - get(paste("prediction.rule", i-1, sep=".")))/get("testSet")[paste("Loads", i-1, sep=".")]))^2))
+  
+  
+  temp.mse = mean(unlist(abs((get("testSet")[paste("Loads", i-1, sep=".")] - get(paste("prediction.rule", i-1, sep=".")))/get("testSet")[paste("Loads", i-1, sep=".")]))^2)
+  
+  
+  fit.rule.fs.ms[[paste("fit.rule",i-1,sep=".")]] = get(paste("fit.rule",i-1, sep="."))
+  
+  prediction.rule.fs.ms[[paste("prediction.rule",i-1,sep=".")]] = get(paste("prediction.rule",i-1, sep="."))
+  
+  mape.rule.fs.ms[[paste("mape.rule",i-1,sep=".")]] = temp.mape
+  mae.rule.fs.ms[[paste("mae.rule",i-1,sep=".")]] = temp.mae
+  mse.rule.fs.ms[[paste("mse.rule",i-1,sep=".")]] = temp.mse
+  rmse.rule.fs.ms[[paste("rmse.rule",i-1,sep=".")]] = temp.rmse  
+  
+  
+}
+
+
+#calculate the mean mape####
+cat("calculate the mean mape\n")
+mean.mape.rule.fs.ms = mean(unlist(mape.rule.fs.ms))
+
+cat("calculate the mean mae\n")
+mean.mae.rule.fs.ms = mean(unlist(mae.rule.fs.ms))
+
+cat("calculate the mean mse\n")
+mean.mse.rule.fs.ms = mean(unlist(mse.rule.fs.ms))
+
+cat("calculate the mean rmse\n")
+mean.rmse.rule.fs.ms = mean(unlist(rmse.rule.fs.ms))
+
+
+cat("mean rule mape: ", round(mean.mape.rule.fs.ms,3), "\n")
+cat("mean rule mae: ", round(mean.mae.rule.fs.ms,5), "\n")
+cat("mean rule mse: ", round(mean.mse.rule.fs.ms,5), "\n")
+cat("mean rule rmse: ", round(mean.rmse.rule.fs.ms,5), "\n")
+
+
+cat("elapsed time in minutes: ", (proc.time()[3]-startTime)/60,"\n")
+
+
+
+rm(list=ls(pattern="fit.rule.[0-9]"))
+rm(list=ls(pattern="prediction.rule.[0-9]"))
+rm(list=ls(pattern="mape.rule.[0-9]"))
+rm(list=ls(pattern="mae.rule.[0-9]"))
+rm(list=ls(pattern="mse.rule.[0-9]"))
+rm(list=ls(pattern="rmse.rule.[0-9]"))
+rm(list=ls(pattern="min.mape."))
+rm(list=ls(pattern="temp."))
+rm(unbiasedFlag)
+rm(i)
+
