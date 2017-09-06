@@ -101,7 +101,60 @@ for(i in 1:24) {
       
     }
     
+    ###experiments####
+    #saving each tuning experiments####
+    if (!exists("experiments.rule.ms")) {
+      
+      experiments.rule.ms = data.frame("mape" = NA, "mae" = NA, "mse" = NA, "rmse" = NA, "features" = NA, "dataset" = NA, "biased" = NA, "committee" = 1, "algorithm" = NA, "model" = NA, "date" = NA) 
+      
+      experiments.rule.ms$features = list(list.of.features)
+      
+      if(length(list.of.features) != length(full.list.of.features))
+        experiments.rule.ms$dataset = "feature selection"
+      else
+        experiments.rule.ms$dataset = "full.list.of.features"
+      
+      experiments.rule.ms$mape = temp.mape
+      experiments.rule.ms$mae = temp.mae
+      experiments.rule.ms$mse = temp.mse
+      experiments.rule.ms$rmse = temp.rmse
+      experiments.rule.ms$biased = unbiasedFlag
+      experiments.rule.ms$algorithm = "rule"
+      experiments.rule.ms$model = paste("Loads.", i-1, sep="")
+      experiments.rule.ms$date = format(Sys.time(), "%d-%m-%y %H:%M:%S")
+      
+    } else {
+      temp = data.frame("mape" = NA, "mae" = NA, "mse" = NA, "rmse" = NA, "features" = NA, "dataset" = NA, "biased" = NA, "committee" = 1, "algorithm" = NA, "model" = NA, "date" = NA) 
+      
+      temp$features = list(list.of.features)
+      
+      
+      if(length(list.of.features) != length(full.list.of.features))
+        temp$dataset = "feature selection"
+      else
+        temp$dataset = "full.list.of.features"
+      
+      
+      temp$mape = temp.mape
+      temp$mae = temp.mae
+      temp$mse = temp.mse
+      temp$rmse = temp.rmse
+      temp$biased = unbiasedFlag
+      temp$algorithm = "rule"
+      temp$model = paste("Loads.", i-1, sep="")
+      temp$date = format(Sys.time(), "%d-%m-%y %H:%M:%S")
+      
+      experiments.rule.ms = rbind(experiments.rule.ms, temp)
+      rm(temp)
+    }
+    
+    
+    
+    
+    cat("elapsed time in minutes: ", (proc.time()[3]-startTime)/60,"\n")
   }
+  
+  
 } ###end of tuning####
 
 
@@ -172,7 +225,7 @@ for(i in 1:24) {
   mape.rule.fs.ms[[paste("mape.rule",i-1,sep=".")]] = temp.mape
   mae.rule.fs.ms[[paste("mae.rule",i-1,sep=".")]] = temp.mae
   mse.rule.fs.ms[[paste("mse.rule",i-1,sep=".")]] = temp.mse
-  rmse.rule.fs.ms[[paste("rmse.rule",i-1,sep=".")]] = temp.rmse  
+  rmse.rule.fs.ms[[paste("rmse.rule",i-1,sep=".")]] = temp.rmse
   
   
 }
