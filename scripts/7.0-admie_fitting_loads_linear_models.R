@@ -35,7 +35,7 @@ for(i in 1:24) {
  
   list.of.features = getSelectedAttributes(final.boruta.list2[[i]], withTentative = F)
     
-  cat("creating a model for Loads at ", i ," o' clock\n")
+  cat("creating a model for Loads at ", i-1 ," o' clock\n")
   cat("\n lm models with the following combination of features:\n\n", list.of.features, "\n\n")
     
     
@@ -56,7 +56,7 @@ for(i in 1:24) {
     
     
   #creating the models####
-  assign(paste("fit.lm", i-1, sep="."), lm(as.formula(paste("Loads.", i-1, "~.", sep="")), data = FeaturesVariables))
+  assign(paste("fit.lm", i-1, sep="."), lm(as.formula(paste("Loads.", i-1, "~.^2", sep="")), data = FeaturesVariables))
   
   
   #log - log

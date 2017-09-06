@@ -8,7 +8,7 @@ startTime <- proc.time()[3]
 
 xlsFiles <-
   list.files(
-    path = "ADMIE",
+    path = "IPTO",
     pattern = "xlsx",
     all.files = FALSE,
     full.names = TRUE,
@@ -36,7 +36,7 @@ names(myLoads)[3] <- "Loads"
 backUp.Loads = myLoads
 rm("test", "df", size, i)
 
-source("1.2-admie-remove-daylight-saving-days.R")
+
 
 
 cat("elapsed time in minutes: ", (proc.time()[3] - startTime) / 60)
