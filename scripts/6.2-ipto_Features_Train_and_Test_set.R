@@ -22,3 +22,4 @@ full.list.of.FeaturesVariables =
 predictor.df = data.frame()
 predictor.df = full.list.of.FeaturesVariables[0, ]
 predictor.df = rbind(predictor.df, testSet[names(testSet) %in% names(predictor.df)])
+
