@@ -36,7 +36,7 @@ for(i in 1:24) {
     
     cat("\n\n tuning rule model: Load.", i-1 ," with unbiasedFlag ", unbiasedFlag ,"\n\n")
     
-    list.of.features = getSelectedAttributes(final.boruta.list2[[i]], withTentative = F)
+    list.of.features = full.list.of.features
     
     FeaturesVariables = 
       trainSet[list.of.features]
@@ -174,8 +174,7 @@ fit.rule.full.ms = list()
 
 for(i in 1:24) {
   
-  list.of.features =
-    getSelectedAttributes(final.boruta.list2[[i]], withTentative = F)
+  list.of.features = full.list.of.features
   
   cat("\n\n training rules after evaluation model: Load.",i-1," with best unbiasedFlag = ", best.rule.parameters.full[[paste("best.rule.param.", i-1, sep="")]][["unbiased"]], "\n", sep="")
   
