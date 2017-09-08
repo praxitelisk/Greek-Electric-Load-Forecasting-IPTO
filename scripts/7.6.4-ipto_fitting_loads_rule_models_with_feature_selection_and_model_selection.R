@@ -1,3 +1,7 @@
+#####################################################################
+#### Rule based tuning with model selection from feature selection ###
+#####################################################################
+
 library("Cubist")
 library("Boruta")
 
