@@ -1,5 +1,5 @@
 ####################################################################
-#####xgboost with feature selection and default parameters####
+#####Rules with feature selection and default parameters####
 ####################################################################
 
 
