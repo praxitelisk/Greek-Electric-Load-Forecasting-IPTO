@@ -20,12 +20,6 @@ train.and.evalSet = final.Data.Set[1:(len - splitEvalSet), ]
 testSet = final.Data.Set[(len - splitEvalSet + 1):len, ]
 
 
-#if (!exists("best.rule.parameters.full")) {
-best.rule.parameters.full = list()
-best.rule.fit.full = list()
-best.rule.prediction.full = list()
-#}
-
 mape.rule.full.def = list()
 mae.rule.full.def = list()
 rmse.rule.full.def = list()
