@@ -30,7 +30,7 @@ fit.randomForest.full.def = list()
 
 for(i in 1:24) {
   
-  list.of.features = full.list.
+  list.of.features = full.list.of.features
   
   cat("\n\n training model: Load.",i-1," with feature selection and default parameters \n", sep="")
   
