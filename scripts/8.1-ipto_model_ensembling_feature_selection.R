@@ -5,11 +5,11 @@ str_model_ensembling = c()
 
 for(i in 1:24) {
   
-  str.model.select = c("svm.fs.ms", "svm.fs.def", "nn.fs.ms", "nn.fs.def", "xgboost.fs.ms", "xgboost.fs.def", "randomForest.fs.ms", "rule.fs.ms")
-  str.pred.select = c("prediction.svm.fs.ms", "prediction.svm.ms.def","prediction.nn.fs.ms", "prediction.nn.fs.def", "prediction.xgboost.fs.ms", "prediction.xgboost.fs.def", "prediction.randomForest.fs.ms", "prediction.rule.fs.ms")
+  str.model.select = c("svm.fs.def", "nn.fs.def", "xgboost.fs.def", "randomForest.fs.def", "rule.fs.def", "knn.fs.def")
+  str.pred.select = c("prediction.svm.fs.def", "prediction.nn.fs.def", "prediction.xgboost.fs.def", "prediction.randomForest.fs.def", "prediction.rule.fs.def", "knn.fs.def")
   
-  model.select = c(mape.svm.fs.ms[[i]], mape.svm.fs.def[[i]], mape.nn.fs.ms[[i]], mape.nn.fs.def[[i]], mape.xgboost.fs.ms[[i]], mape.xgboost.fs.def[[i]], mape.randomForest.fs.ms[[i]] ,mape.rule.fs.ms[[i]])
-  pred.select = c(prediction.svm.fs.ms[[i]], prediction.svm.fs.def[[i]], prediction.nn.fs.ms[[i]], prediction.svm.fs.def[[i]], prediction.xgboost.fs.ms[[i]], prediction.xgboost.fs.def[[i]], prediction.randomForest.fs.ms[[i]], prediction.rule.fs.ms[[i]])
+  model.select = c(mape.svm.fs.def[[i]], mape.nn.fs.def[[i]], mape.xgboost.fs.def[[i]], mape.randomForest.fs.def[[i]] ,mape.rule.fs.def[[i]], mape.knn.fs.def[[i]])
+  pred.select = c(prediction.svm.fs.def[[i]], prediction.nn.fs.def[[i]], prediction.xgboost.fs.def[[i]], prediction.randomForest.fs.def[[i]], prediction.rule.fs.def[[i]], prediction.knn.fs.def[[i]])
   
   #cat("best mape for ", i-1 ,"th hour: ", min(model.select), ", calculated from model: ", str.model.select[which.min(model.select)] ,", fit.", str.model.select[which.min(model.select)], ".", i-1, " prediction: ", str.pred.select[which.min(model.select)], ".", i-1, "\n", sep = "")
   cat("best mape for ", i-1 ,"th hour: ", min(model.select), ", calculated from model: ", str.model.select[which.min(model.select)] ,", fit.", str.model.select[which.min(model.select)], ".", i-1, "\n", sep = "")
@@ -21,7 +21,7 @@ for(i in 1:24) {
   
 }
 
-pred.ensembling = c(
+pred.ensembling.fs.def = c(
   rbind(
     get(str_pred_ensembling[1])[[1]],
     get(str_pred_ensembling[2])[[2]],
@@ -53,3 +53,6 @@ pred.ensembling = c(
 
 cat("\n\n mean mape with feature selection:", temp/24)
 cat("\n abbreviations: ms: model selection \n fs: feature selection\n")
+
+
+rm(temp, str.model.select, str.pred.select, model.select, pred.select)
