@@ -21,9 +21,9 @@ http://www.admie.gr/nc/en/home/
   <li><strong>xgboost models</strong>, library: install.package("xgboost")</li>
   
   <h3>Plots - Visualizations</h3>
-  <li><strong>ggplot2</strong>, library: library: install.package("ggplot2")</li>
-  <li><strong>plotly</strong>, library: library: install.package("plotly")</li>
-  <li><strong>Rmarkdown</strong>, library: library: install.package("Rmarkdown")</li>
-  <li><strong>R-Shiny</strong>, library: library: install.package("shiny")</li>
-  <li><strong>flexdashboard</strong>, library: library: install.package("flexdashboard")</li>
+  <li><strong>ggplot2</strong>, library: install.package("ggplot2")</li>
+  <li><strong>plotly</strong>, library: install.package("plotly")</li>
+  <li><strong>Rmarkdown</strong>, library: install.package("Rmarkdown")</li>
+  <li><strong>R-Shiny</strong>, library: install.package("shiny")</li>
+  <li><strong>flexdashboard</strong>, library: install.package("flexdashboard")</li>
 </ul>
