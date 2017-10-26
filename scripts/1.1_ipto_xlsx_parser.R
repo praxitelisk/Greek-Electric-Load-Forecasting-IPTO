@@ -1,6 +1,9 @@
-#Parsing the xlsx files from to get the loads-------------
+#############################################################
+####Parsing the xlsx files from to get the loads#############
+#############################################################
 
-library("xlsx")
+#library("xlsx")
+library("readxl")
 
 # rm(list = ls())
 
@@ -22,14 +25,14 @@ xlsFiles <-
 size <- length(xlsFiles)
 test <- vector()
 for (i in 1:size) {
-  df <- read.xlsx(xlsFiles[i], sheetIndex = 1, colIndex = (1:5))
+  df <- read_excel(xlsFiles[i], sheet = 1, cell_cols("A:E"))
   
   test <- rbind(test, df)
 }
 
 test <- test[-c(1,2)]
 myLoads = test
-#myLoads <- test[!test$HOUR == 25, ]
+##myLoads = test[!test$HOUR == 25, ]
 ##myLoads =  myLoads[complete.cases(myLoads),]
 
 names(myLoads)[3] <- "Loads"
@@ -40,4 +43,4 @@ rm("test", "df", size, i)
 
 
 cat("elapsed time in minutes: ", (proc.time()[3] - startTime) / 60)
-#elapsed time in minutes:  4.295167
+#elapsed time in minutes:  0.025
