@@ -3,12 +3,12 @@
 
 library(tibble) #for add_column command
 
-myLoads = backUp.Loads
+#myLoads = backUp.Loads
 
 
 time = paste(myLoads$DATE," ",myLoads$HOUR,":00", sep="", collapse = NULL)
 #time = strptime(time, format="%Y-%m-%d %H:%M")
-time = as.POSIXct(time, format="%Y-%m-%d %H:%M", tz = Sys.timezone())
+time = as.POSIXct(time, format="%Y-%m-%d %H:%M", tz = "Europe/Athens")
 
 
 #an auxilliary variable taken from darkSkyAPI in order to check if
@@ -21,19 +21,19 @@ myLoads = add_column(myLoads, time, .after = "HOUR")
 
 
 #remove the other 25 hour values-------------
-myLoads <- myLoads[!myLoads$HOUR == 25, ]
+#myLoads <- myLoads[!myLoads$HOUR == 25, ]
 
 
 #remove March daylight saving day
-datesToBeRemoved = myLoads$DATE[which(is.na(myLoads$time))]
+#datesToBeRemoved = myLoads$DATE[which(is.na(myLoads$time))]
 
-for(i in 1:length(datesToBeRemoved)) {
-  #print(datesToBeRemoved[i])
-  myLoads = myLoads[!myLoads$DATE == datesToBeRemoved[i], ]
-}
+#for(i in 1:length(datesToBeRemoved)) {
+#print(datesToBeRemoved[i])
+#  myLoads = myLoads[!myLoads$DATE == datesToBeRemoved[i], ]
+#}
 
 
 #re-indexing
-row.names(myLoads) <- 1:nrow(myLoads)
+#row.names(myLoads) <- 1:nrow(myLoads)
 
-rm(time, datesToBeRemoved)
+rm(time)

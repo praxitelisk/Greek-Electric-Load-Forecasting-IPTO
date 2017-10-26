@@ -10,7 +10,7 @@ day.of.week = weekdays(darkSky.WeatherData$time)
 
 day.of.week[day.of.week=="Sunday"] = 0
 day.of.week[day.of.week=="Monday"] = 1
-day.of.week[day.of.week=="Τuesday"] = 2
+day.of.week[day.of.week=="Tuesday"] = 2
 day.of.week[day.of.week=="Wednesday"] = 3
 day.of.week[day.of.week=="Thursday"] = 4
 day.of.week[day.of.week=="Friday"] = 5

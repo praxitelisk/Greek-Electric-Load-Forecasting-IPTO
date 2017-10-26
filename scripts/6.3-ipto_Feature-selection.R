@@ -14,7 +14,7 @@ for(i in 1:24) {
   
   set.seed(123)
   
-  assign(paste("boruta.train", i-1, sep="."), Boruta(as.formula(paste("Loads.", i-1, "~.", sep="")) , data = full.list.of.FeaturesVariables, doTrace = 2, maxRuns = 100))
+  assign(paste("boruta.train", i-1, sep="."), Boruta(as.formula(paste("Loads.", i-1, "~.", sep="")) , data = full.list.of.FeaturesVariables, doTrace = 2, maxRuns = 300))
   
   full.list.of.FeaturesVariables[paste("Loads", i-1, sep=".")] = NULL
   

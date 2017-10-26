@@ -9,7 +9,7 @@ fill.NA.values = function(df.column) {
   while(length(which(is.na(darkSky.WeatherData[[df.column]]))) != 0 ) {
     
     na.List = which(is.na(darkSky.WeatherData[[df.column]]))
-    cat(df.column, " NA percent: ", 100 * length(na.List) / nrow(darkSky.WeatherData),"\n\n")
+    cat(df.column, "NA percent: ", 100 * length(na.List) / nrow(darkSky.WeatherData),"%\n\n")
     
     if ( length(na.List) > 0 ) {
       for (i in 1:length(na.List)) {
@@ -72,8 +72,8 @@ darkSky.WeatherData = fill.NA.values("thessaloniki.apparentTemperature")
 #athens apparent temperature missing values####
 cat("#athens temperature missing values####\n")
 darkSky.WeatherData = fill.NA.values("athens.apparentTemperature")
-  
-  
+
+
 ##thessaloniki cloudCover missing values####
 cat("##thessaloniki Cloudcover missing values####\n")
 darkSky.WeatherData = fill.NA.values("thessaloniki.cloudCover")
@@ -134,7 +134,7 @@ cat("icon NA percent: ", 100 * length(na.List) / nrow(darkSky.WeatherData),"\n\n
 
 for (i in 1:length(na.List)) {
   
-      
+  
   darkSky.WeatherData$athens.icon[na.List[i]] = 
     darkSky.WeatherData$athens.icon[na.List[i] - 1]
 }
@@ -196,7 +196,7 @@ cat("##thessaloniki uvIndex missing values####\n")
 na.List = which(is.na(darkSky.WeatherData$thessaloniki.uvIndex))
 
 while(length(na.List) != 0) {
-
+  
   na.List = which(is.na(darkSky.WeatherData$thessaloniki.uvIndex))
   cat("uvIndex NA percent: ", 100 * length(na.List) / nrow(darkSky.WeatherData),"\n\n")
   
@@ -206,7 +206,7 @@ while(length(na.List) != 0) {
       darkSky.WeatherData$thessaloniki.uvIndex[na.List[i] - 1]
     
   }
-
+  
 }
 
 
@@ -229,8 +229,10 @@ while(length(na.List) != 0) {
 }
 
 #removing some variables####
-rm(na.List, time1, time2, i)
+rm(na.List, i)
 
 
 cat("elapsed time in minutes: ", (proc.time()[3]-startTime)/60)
 
+
+#elapsed time in minutes:  4.498333
