@@ -43,4 +43,5 @@ rm("test", "df", size, i)
 
 
 cat("elapsed time in minutes: ", (proc.time()[3] - startTime) / 60)
+rm(startTime)
 #elapsed time in minutes:  0.025

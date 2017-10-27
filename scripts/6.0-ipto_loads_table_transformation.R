@@ -414,5 +414,6 @@ rm(na.List)
 
 
 cat("elapsed time in minutes: ", (proc.time()[3]-startTime)/60)
+rm(startTime)
 
 #elapsed time in minutes:  8.6325

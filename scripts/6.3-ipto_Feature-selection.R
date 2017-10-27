@@ -10,11 +10,11 @@ for(i in 1:24) {
   
   cat("Feature selection for model: ", paste("Loads.", i-1, "~.", sep = ""), "\n")
   
-  full.list.of.FeaturesVariables[paste("Loads", i-1, sep=".")] = trainSet[paste("Loads", i-1, sep=".")]
+  full.list.of.FeaturesVariables[paste("Loads", i-1, sep=".")] = final.Data.Set[paste("Loads", i-1, sep=".")]
   
   set.seed(123)
   
-  assign(paste("boruta.train", i-1, sep="."), Boruta(as.formula(paste("Loads.", i-1, "~.", sep="")) , data = full.list.of.FeaturesVariables, doTrace = 2, maxRuns = 300))
+  assign(paste("boruta.train", i-1, sep="."), Boruta(as.formula(paste("Loads.", i-1, "~.", sep="")) , data = full.list.of.FeaturesVariables, doTrace = 2, maxRuns = 100))
   
   full.list.of.FeaturesVariables[paste("Loads", i-1, sep=".")] = NULL
   
@@ -26,9 +26,11 @@ for(i in 1:24) {
   
   cat("elapsed time in minutes: ", (proc.time()[3]-startTime)/60,"\n\n")
   
+  
 }
 
 
 #remove some variables####
 rm(list=ls(pattern="boruta.train."))
 rm(i)
+rm(startTime)

@@ -70,4 +70,4 @@ row.names(myLoads) <- 1:nrow(myLoads)
 
 
 #removing auxiliary variabels
-rm(temp, i, OctoberDayLightSavingIndex, MarchDayLightSavingIndex)
+rm(temp, i, j, OctoberDayLightSavingIndex, MarchDayLightSavingIndex)
