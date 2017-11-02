@@ -35,7 +35,7 @@ for(i in 1:24) {
   assign(paste("min.mape.", i-1, sep=""), 1000000)
   
   gammaValues = 5 *  10 ^(-5:-2) #10^(-4) #
-  costValues = 2 ^ (2:9) #(6)
+  costValues = 2 ^ (2:10) #(6)
   
   
   for(gammaValue in gammaValues) {
@@ -302,3 +302,6 @@ rm(list=ls(pattern="mape.svm.[0-9]"))
 rm(list=ls(pattern="mae.svm.[0-9]"))
 rm(list=ls(pattern="mse.svm.[0-9]"))
 rm(list=ls(pattern="rmse.svm.[0-9]"))
+
+
+#elapsed time in minutes:  63.58

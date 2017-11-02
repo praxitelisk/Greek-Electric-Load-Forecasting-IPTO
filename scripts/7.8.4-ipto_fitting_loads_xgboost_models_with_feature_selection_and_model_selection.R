@@ -35,7 +35,7 @@ for(i in 1:24) {
   
   for (etaValue in seq(0.1, 0.5, 0.1)) {
     for(depthValue in seq(2, 5, 1)) {
-      for(roundValue in seq(100, 1000, 100)) {
+      for(roundValue in seq(100, 1200, 100)) {
         
         
         cat("\n\n tuning model: Load.", i-1, " with eta = ", etaValue, ", depth = ", depthValue,", round = ", roundValue ,"\n\n")
@@ -57,7 +57,7 @@ for(i in 1:24) {
         
         set.seed(123)
         assign(paste("fit.xgboost", i-1, sep="."), 
-               xgboost(data = dtrain, max_depth = depthValue, eta = etaValue, nrounds = roundValue, nthread = 2, verbose = 0, booster= "gbtree", objective = "reg:linear", nthread = 2))
+               xgboost(data = dtrain, max_depth = depthValue, eta = etaValue, nrounds = roundValue, nthread = 3, verbose = 0, booster= "gbtree", objective = "reg:linear"))
         
   
         #create the predictor.df data.frame for predictions####
@@ -207,7 +207,7 @@ for(i in 1:24) {
   
   set.seed(123)
   assign(paste("fit.xgboost", i-1, sep="."), 
-         xgboost(data = dtrain, max_depth = best.xgboost.parameters.fs[[paste("best.xgboost.param.", i-1, sep="")]][["depth"]], eta = best.xgboost.parameters.fs[[paste("best.xgboost.param.", i-1, sep="")]][["eta"]], nrounds = best.xgboost.parameters.fs[[paste("best.xgboost.param.", i-1, sep="")]][["round"]], nthread = 2, verbose = 0, booster= "gbtree", objective = "reg:linear"))
+         xgboost(data = dtrain, max_depth = best.xgboost.parameters.fs[[paste("best.xgboost.param.", i-1, sep="")]][["depth"]], eta = best.xgboost.parameters.fs[[paste("best.xgboost.param.", i-1, sep="")]][["eta"]], nrounds = best.xgboost.parameters.fs[[paste("best.xgboost.param.", i-1, sep="")]][["round"]], nthread = 3, verbose = 0, booster= "gbtree", objective = "reg:linear"))
   
   
   FeaturesVariables[paste("Loads", i-1, sep=".")] = NULL
