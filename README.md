@@ -1,4 +1,7 @@
 # Greek-Electric-Load-Forecasting-IPTO
+<div><p align = "center"><img src = "https://pk-shinies.shinyapps.io/ipto-ml/_w_703ba8b8/file33591c7064_files/img/logo_horizontal.png" /></p></div>
+
+<br>
 <img src = "https://img.shields.io/badge/license-MIT-blue.svg" />
 
 This repo contains the code for my postgraduate thesis dealing with Short-term Load Forecasting, predicting the electric load demand per hour in Greece, developed in R, RStudio, R-markdown and R-Shiny using daily load datasets provided by the Greek Independent Power Transmission Operator (I.P.T.O.) - (AΔΜHΕ in greek) http://www.admie.gr/nc/en/home/
