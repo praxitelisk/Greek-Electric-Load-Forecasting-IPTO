@@ -12,24 +12,24 @@ colnames(final.Data.Set)[grep(paste("^", current.day.list.of.features, collapse 
 
 
 #adding noise from uniform distribution####
-# final.Data.Set[grep("^forecast", colnames(final.Data.Set))] = 
-#   round(final.Data.Set[grep("^forecast", colnames(final.Data.Set))] +
-#           runif(final.Data.Set[grep("^forecast", colnames(final.Data.Set))], -0.5, 0.5), 2)
+ final.Data.Set[grep("^forecast", colnames(final.Data.Set))] = 
+   round(final.Data.Set[grep("^forecast", colnames(final.Data.Set))] +
+           runif(final.Data.Set[grep("^forecast", colnames(final.Data.Set))], -1, 1), 2)
 
 
 #recalculate the sine and cosine from windbearing####
-# for(i in 1:24) {
-#   final.Data.Set[paste("forecast.sine.thessaloniki.windBearing", i-1, sep=".")] = 
-#     sin(final.Data.Set[paste("forecast.thessaloniki.windBearing", i-1, sep=".")] * pi / 180)
-#   
-#   final.Data.Set[paste("forecast.cosine.thessaloniki.windBearing", i-1, sep=".")] = 
-#     cos(final.Data.Set[paste("forecast.thessaloniki.windBearing", i-1, sep=".")] * pi / 180)
-#   
-#   final.Data.Set[paste("forecast.sine.athens.windBearing", i-1, sep=".")] = 
-#     sin(final.Data.Set[paste("forecast.athens.windBearing", i-1, sep=".")] * pi / 180)
-#   
-#   final.Data.Set[paste("forecast.cosine.athens.windBearing", i-1, sep=".")] = 
-#     cos(final.Data.Set[paste("forecast.athens.windBearing", i-1, sep=".")] * pi / 180)
-# }
+ for(i in 1:24) {
+   final.Data.Set[paste("forecast.sine.thessaloniki.windBearing", i-1, sep=".")] = 
+     sin(final.Data.Set[paste("forecast.thessaloniki.windBearing", i-1, sep=".")] * pi / 180)
+   
+   final.Data.Set[paste("forecast.cosine.thessaloniki.windBearing", i-1, sep=".")] = 
+     cos(final.Data.Set[paste("forecast.thessaloniki.windBearing", i-1, sep=".")] * pi / 180)
+   
+   final.Data.Set[paste("forecast.sine.athens.windBearing", i-1, sep=".")] = 
+     sin(final.Data.Set[paste("forecast.athens.windBearing", i-1, sep=".")] * pi / 180)
+   
+   final.Data.Set[paste("forecast.cosine.athens.windBearing", i-1, sep=".")] = 
+     cos(final.Data.Set[paste("forecast.athens.windBearing", i-1, sep=".")] * pi / 180)
+ }
 
 rm(current.day.list.of.features, i)
