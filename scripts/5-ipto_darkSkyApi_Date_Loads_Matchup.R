@@ -7,7 +7,7 @@ library(tibble) #for add_column command
 
 
 time = paste(myLoads$DATE," ",myLoads$HOUR,":00", sep="", collapse = NULL)
-#time = strptime(time, format="%Y-%m-%d %H:%M")
+time = gsub("/", "-", time)
 time = as.POSIXct(time, format="%Y-%m-%d %H:%M", tz = "Europe/Athens")
 
 

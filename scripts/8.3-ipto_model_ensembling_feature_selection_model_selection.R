@@ -9,11 +9,18 @@ str_model_ensembling = c()
 
 for(i in 1:24) {
   
-  str.model.select = c("svm.fs.ms", "nn.fs.ms", "xgboost.fs.ms", "randomForest.fs.ms", "rule.fs.ms", "knn.fs.ms")
-  str.pred.select = c("prediction.svm.fs.ms", "prediction.nn.fs.ms", "prediction.xgboost.fs.ms", "prediction.randomForest.fs.ms", "prediction.rule.fs.ms", "knn.fs.ms")
+  #str.model.select = c("svm.fs.ms", "nn.fs.ms", "xgboost.fs.ms", "randomForest.fs.ms", "rule.fs.ms", "knn.fs.ms")
+  #str.pred.select = c("prediction.svm.fs.ms", "prediction.nn.fs.ms", "prediction.xgboost.fs.ms", "prediction.randomForest.fs.ms", "prediction.rule.fs.ms", "knn.fs.ms")
   
-  model.select = c(mape.svm.fs.ms[[i]], mape.nn.fs.ms[[i]], mape.xgboost.fs.ms[[i]], mape.randomForest.fs.ms[[i]] ,mape.rule.fs.ms[[i]], mape.knn.fs.ms[[i]])
-  pred.select = c(prediction.svm.fs.ms[[i]], prediction.nn.fs.ms[[i]], prediction.xgboost.fs.ms[[i]], prediction.randomForest.fs.ms[[i]], prediction.rule.fs.ms[[i]], prediction.knn.fs.ms[[i]])
+  #model.select = c(mape.svm.fs.ms[[i]], mape.nn.fs.ms[[i]], mape.xgboost.fs.ms[[i]], mape.randomForest.fs.ms[[i]] ,mape.rule.fs.ms[[i]], mape.knn.fs.ms[[i]])
+  #pred.select = c(prediction.svm.fs.ms[[i]], prediction.nn.fs.ms[[i]], prediction.xgboost.fs.ms[[i]], prediction.randomForest.fs.ms[[i]], prediction.rule.fs.ms[[i]], prediction.knn.fs.ms[[i]])
+  
+  str.model.select = c("svm.fs.ms","rule.fs.ms", "xgboost.fs.ms")
+  str.pred.select = c("prediction.svm.fs.ms", "prediction.rule.fs.ms")
+  
+  model.select = c(mape.svm.fs.ms[[i]], mape.rule.fs.ms[[i]])
+  pred.select = c(prediction.svm.fs.ms[[i]], prediction.rule.fs.ms[[i]])
+  
   
   #cat("best mape for ", i-1 ,"th hour: ", min(model.select), ", calculated from model: ", str.model.select[which.min(model.select)] ,", fit.", str.model.select[which.min(model.select)], ".", i-1, " prediction: ", str.pred.select[which.min(model.select)], ".", i-1, "\n", sep = "")
   cat("best mape for ", i-1 ,"th hour: ", min(model.select), ", calculated from model: ", str.model.select[which.min(model.select)] ,", fit.", str.model.select[which.min(model.select)], ".", i-1, "\n", sep = "")
@@ -59,4 +66,7 @@ cat("\n\n mean mape with feature selection:", temp/24)
 cat("\n abbreviations: ms: model selection \n fs: feature selection\n")
 
 
-rm(temp, str.model.select, str.pred.select, model.select, pred.select)
+rm(temp, str.model.select, str.pred.select, model.select, pred.select, str_model_ensembling, str_pred_ensembling)
+
+
+#elapsed time in minutes: 8.932833

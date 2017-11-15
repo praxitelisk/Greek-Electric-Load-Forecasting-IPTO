@@ -9,14 +9,16 @@ library("Boruta")
 startTime <- proc.time()[3]
 
 #creating the train and test set splits####
+splitFeatureSelectionSet = 2 * 365
 splitEvalSet = 365
 splitTestSet = splitEvalSet + 365
 len = dim(final.Data.Set)[1]
 
 #trainPart = floor(split * dim(final.Data.Set)[1])
-trainSet = final.Data.Set[1:(len - splitTestSet), ]
-evaluationSet = final.Data.Set[(len-splitTestSet + 1):(len - splitEvalSet), ]
-train.and.evalSet = final.Data.Set[1:(len - splitEvalSet), ]
+featureSelectionSet = final.Data.Set[1:(splitFeatureSelectionSet), ]
+trainSet = final.Data.Set[(splitFeatureSelectionSet + 1):(len - splitTestSet), ]
+evaluationSet = final.Data.Set[(len - splitTestSet + 1):(len - splitEvalSet), ]
+train.feature.and.evalSet = final.Data.Set[1:(len - splitEvalSet), ]
 testSet = final.Data.Set[(len - splitEvalSet + 1):len, ]
 
 
@@ -181,11 +183,11 @@ for(i in 1:24) {
   
   #create the predictor variables from training
   FeaturesVariables =
-    train.and.evalSet[list.of.features]
+    train.feature.and.evalSet[list.of.features]
   
   #add the response variable in trainSet
   FeaturesVariables[paste("Loads", i-1, sep=".")] = 
-    train.and.evalSet[paste("Loads", i-1, sep=".")]
+    train.feature.and.evalSet[paste("Loads", i-1, sep=".")]
   
   
   set.seed(123)
@@ -197,7 +199,7 @@ for(i in 1:24) {
   
   
   FeaturesVariables =
-    train.and.evalSet[list.of.features]
+    train.feature.and.evalSet[list.of.features]
   
   
   predictor.df = data.frame()

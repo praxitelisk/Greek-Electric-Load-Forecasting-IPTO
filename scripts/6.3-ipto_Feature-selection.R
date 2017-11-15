@@ -10,13 +10,13 @@ for(i in 1:24) {
   
   cat("Feature selection for model: ", paste("Loads.", i-1, "~.", sep = ""), "\n")
   
-  full.list.of.FeaturesVariables[paste("Loads", i-1, sep=".")] = final.Data.Set[paste("Loads", i-1, sep=".")]
+  featureSelectionSet[paste("Loads", i-1, sep=".")] = final.Data.Set[1:dim(featureSelectionSet)[1], paste("Loads", i-1, sep=".")]
   
   set.seed(123)
   
-  assign(paste("boruta.train", i-1, sep="."), Boruta(as.formula(paste("Loads.", i-1, "~.", sep="")) , data = full.list.of.FeaturesVariables, doTrace = 2, maxRuns = 100))
+  assign(paste("boruta.train", i-1, sep="."), Boruta(as.formula(paste("Loads.", i-1, "~.", sep="")) , data = featureSelectionSet, doTrace = 2, maxRuns = 100, num.threads = 2))
   
-  full.list.of.FeaturesVariables[paste("Loads", i-1, sep=".")] = NULL
+  featureSelectionSet[paste("Loads", i-1, sep=".")] = NULL
   
   
   #get the most important features per Loads.i

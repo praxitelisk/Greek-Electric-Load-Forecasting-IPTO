@@ -17,6 +17,14 @@ colnames(final.Data.Set)[grep(paste("^", current.day.list.of.features, collapse 
            runif(final.Data.Set[grep("^forecast", colnames(final.Data.Set))], -1, 1), 2)
 
 
+#recalculating uvIndex after noise
+ flag = final.Data.Set[grep("^forecast.(athens|thessaloniki).windBearing.[0-9]+|^forecast.(athens|thessaloniki).humidity|^forecast.(athens|thessaloniki).windSpeed|^forecast.(athens|thessaloniki).cloudCover|^forecast.(athens|thessaloniki).uvIndex|^forecast.(athens|thessaloniki).visibility", names(final.Data.Set))] < 0
+ 
+ final.Data.Set[grep("^forecast.(athens|thessaloniki).windBearing.[0-9]+|^forecast.(athens|thessaloniki).humidity|^forecast.(athens|thessaloniki).windSpeed|^forecast.(athens|thessaloniki).cloudCover|^forecast.(athens|thessaloniki).uvIndex|^forecast.(athens|thessaloniki).visibility", names(final.Data.Set))][flag] = 0
+ 
+ rm(flag)
+ 
+
 #recalculate the sine and cosine from windbearing####
  for(i in 1:24) {
    final.Data.Set[paste("forecast.sine.thessaloniki.windBearing", i-1, sep=".")] = 

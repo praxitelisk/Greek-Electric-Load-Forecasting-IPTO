@@ -1,3 +1,6 @@
+###there is an issue after introducing March artificial hour on March's last Sunday
+### chck it out
+
 library("lubridate")
 
 startTime <- proc.time()[3]
@@ -71,7 +74,7 @@ x <- seq(
 
 
 OctoberToBeRemoved = x[wday(x,label = TRUE) == "Sun" & day(x) >= 25 & month(x) == 10]
-MarchToBeAdded = x[wday(x,label = TRUE) == "Sun" & day(x) >= 25 & month(x) == 3]
+#MarchToBeAdded = x[wday(x,label = TRUE) == "Sun" & day(x) >= 25 & month(x) == 3]
 
 
 for(i in 1:length(OctoberToBeRemoved)) {
@@ -81,13 +84,18 @@ for(i in 1:length(OctoberToBeRemoved)) {
   darkSky.N.Loads.Combined = darkSky.N.Loads.Combined[-remove,]
 }
 
+
+row.names(darkSky.N.Loads.Combined) <- 1:nrow(darkSky.N.Loads.Combined)
 addAfterIndexList = c()
+MarchToBeAdded = x[wday(x,label = TRUE) == "Sun" & day(x) >= 25 & month(x) == 3]
+
+
 for(i in 1:length(MarchToBeAdded)) {
   
   
   temp = data.frame(matrix(NA, nrow=1, ncol=length(darkSky.N.Loads.Combined)))
   colnames(temp)= colnames(darkSky.N.Loads.Combined)
-  temp$time = as.POSIXct(paste(MarchToBeAdded[i], "04:00:00"))
+  temp$time = as.POSIXct(paste(MarchToBeAdded[i], "04:00:00"), tz="Europe/Athens")
   #temp$DATE[1] = MarchToBeAdded[i]
   #class(temp$DATE) = class(darkSky.N.Loads.Combined$DATE)
   
@@ -99,11 +107,13 @@ for(i in 1:length(MarchToBeAdded)) {
     darkSky.N.Loads.Combined[1:addAfterIndex, ], 
     temp, 
     darkSky.N.Loads.Combined[(addAfterIndex+1):nrow(darkSky.N.Loads.Combined), ])
+  
+  row.names(darkSky.N.Loads.Combined) <- 1:nrow(darkSky.N.Loads.Combined)
 }
 
 
 
-row.names(darkSky.N.Loads.Combined) <- 1:nrow(darkSky.N.Loads.Combined)
+#row.names(darkSky.N.Loads.Combined) <- 1:nrow(darkSky.N.Loads.Combined)
 
 
 

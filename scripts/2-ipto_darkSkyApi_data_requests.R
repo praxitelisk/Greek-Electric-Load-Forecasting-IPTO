@@ -7,7 +7,7 @@ library("jsonlite")
 
 startTime <- proc.time()[3]
 
-list.of.api.keys = c("******")
+list.of.api.keys = c("**********")
 
 
 darkSky.WeatherData.temp <- list()
@@ -15,7 +15,7 @@ darkSky.WeatherData.temp <- list()
 api.key.calls = 1
 api.key.index = 1
 
-days <- seq( from =  as.Date(min(myLoads$DATE)), to = as.Date(max(myLoads$DATE)) + 1, by='days' )
+days <- seq( from =  as.Date(myLoads$DATE)[1], to = as.Date(myLoads$DATE)[dim(myLoads)[1]] + 1, by='days' )
 
 for ( i in seq_along(days) ) {
   
@@ -137,6 +137,9 @@ darkSky.WeatherData = darkSky.WeatherData.temp
 backUp.DarkSky = darkSky.WeatherData
 
 cat("elapsed time in minutes: ", (proc.time()[3]-startTime)/60)
+#elapsed time in minutes:  55.3745
 
+#remove auxiliary variables
+rm(startTime)
 
 rm(darkSky.WeatherData.temp, json.df.athens, json.df.thess, test, temp, days, aux_day, day, url.athens, url.thess, api.key.calls, api.key.index, list.of.api.keys, i)
