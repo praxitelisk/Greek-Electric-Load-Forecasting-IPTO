@@ -71,6 +71,8 @@ for(i in 1:length(addAfterIndexList)) {
 
 pred.ensembling.df$ooem.predictions = ooem_predictions$ooem_predictions
 
+rownames(pred.ensembling.df) = 1:dim(pred.ensembling.df)[1]
+
 mape.postprocessed = 100 * mean(abs((pred.ensembling.df$loads - pred.ensembling.df$prediction.ensembling)/pred.ensembling.df$loads))
 
 mape.ooem = 100 * mean(abs((pred.ensembling.df$loads - pred.ensembling.df$ooem.predictions)/pred.ensembling.df$loads))
