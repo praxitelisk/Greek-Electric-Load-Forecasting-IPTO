@@ -108,7 +108,7 @@ for(i in 1:length(ooemXLSFiles)) {
   temp[, 2] = as.numeric(as.character(temp[, 2]))
   
   if(first.file == i) {
-    temp = temp[1, ]
+    temp = temp[dim(temp)[1], ]
   }
   
   else if (last.file == i) {
