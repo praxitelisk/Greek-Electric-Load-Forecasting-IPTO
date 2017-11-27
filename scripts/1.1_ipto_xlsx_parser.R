@@ -64,7 +64,7 @@ for (i in 1:length(xlsFiles)) {
     temp = as.numeric(temp)
     df$SETTLED.ENERGY.SUPPLIED.TO.CUSTOMERS.FOR.ALL.LOAD.REPRESENTATIVES..MWh. = temp
   }
-  #for 2012 - .... the rest csv the csv seperator is ","
+  #for 2012 - .... the csv seperator is ","
   else {
     cat(i, xlsFiles[i], ", \n")
     df = read.csv(xlsFiles[i], sep=",")
@@ -100,6 +100,6 @@ rm("test", "df", i, temp, day, month, year, time, date, num1, num2)
 
 
 
-cat("elapsed time in minutes: ", (proc.time()[3] - startTime) / 60)
+cat("elapsed time in seconds: ", (proc.time()[3] - startTime))
 rm(startTime)
 #elapsed time in minutes:  0.025
