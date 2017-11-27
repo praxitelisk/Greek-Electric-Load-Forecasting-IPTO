@@ -20,30 +20,33 @@ MarchDayLightSavingIndex = which(temp$HOUR == 24 & temp$Loads == 0)
 
 
 #October's last Sunday-------------
-for(i in 1:length(OctoberDayLightSavingIndex)) {
-  
-  for(j in 4:25) {
-    temp[OctoberDayLightSavingIndex[i] - 25 + j, 2] = j - 1
+if (length(OctoberDayLightSavingIndex) > 0) {
+  for(i in 1:length(OctoberDayLightSavingIndex)) {
+    
+    for(j in 4:25) {
+      temp[OctoberDayLightSavingIndex[i] - 25 + j, 2] = j - 1
+    }
+    
+    #temp = temp[-(OctoberDayLightSavingIndex[i] - 25 + 2), ]
+    
   }
-  
-  #temp = temp[-(OctoberDayLightSavingIndex[i] - 25 + 2), ]
-  
 }
 
 
 #March's last Sunday-------------
-for(i in 1:length(MarchDayLightSavingIndex)) {
-  
-  for(j in 23:2) {
-    temp[MarchDayLightSavingIndex[i] - 23 + j, 3] = temp[MarchDayLightSavingIndex[i] - 23 + j - 1, 3]
+if (length(MarchDayLightSavingIndex) > 0) {
+  for(i in 1:length(MarchDayLightSavingIndex)) {
+    
+    for(j in 23:2) {
+      temp[MarchDayLightSavingIndex[i] - 23 + j, 3] = temp[MarchDayLightSavingIndex[i] - 23 + j - 1, 3]
+    }
+    
+    
   }
-  
-  
+
+
+  temp = temp[-(MarchDayLightSavingIndex - 23 + 2), ]
 }
-
-
-temp = temp[-(MarchDayLightSavingIndex - 23 + 2), ]
-
 
 
 

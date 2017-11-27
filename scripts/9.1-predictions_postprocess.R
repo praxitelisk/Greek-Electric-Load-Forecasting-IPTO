@@ -69,6 +69,8 @@ for(i in 1:length(addAfterIndexList)) {
   pred.ensembling.df[addAfterIndexList[i], 2] = myLoads[addExtraLoadList[i], 4]
 }
 
+#calculate mape######################
+
 pred.ensembling.df$ooem.predictions = ooem_predictions$ooem_predictions
 
 rownames(pred.ensembling.df) = 1:dim(pred.ensembling.df)[1]
@@ -78,9 +80,27 @@ mape.postprocessed = 100 * mean(abs((pred.ensembling.df$loads - pred.ensembling.
 mape.ooem = 100 * mean(abs((pred.ensembling.df$loads - pred.ensembling.df$ooem.predictions)/pred.ensembling.df$loads))
 
 
+pred.ensembling.df["mape"]  = 100 * abs((pred.ensembling.df$loads - pred.ensembling.df$prediction.ensembling)/pred.ensembling.df$loads)
+pred.ensembling.df["mape.ooem"]  = 100 * abs((pred.ensembling.df$loads - pred.ensembling.df$ooem.predictions)/pred.ensembling.df$loads)
+
+#print results#########
+
 cat("mape postprocessed:", mape.postprocessed,"\n")
 cat("mape mape.ooem:", mape.ooem,"\n")
 cat("mape performance: ", round(100 * (mape.ooem - mape.postprocessed)/ mape.ooem, 3), "%", sep="")
+
+
+#save data.frames as RDS files############
+
+saveRDS(pred.ensembling.df, "pred.ensembling.df.RDS")
+file.copy(from = "pred.ensembling.df.RDS", to = "gui/RDS.Files/pred.ensembling.df.RDS", overwrite = TRUE)
+file.remove("pred.ensembling.df.RDS")
+
+
+saveRDS(darkSky.N.Loads.Combined, "darkSky.N.Loads.Combined.RDS")
+file.copy(from = "darkSky.N.Loads.Combined.RDS", to = "gui/RDS.Files/darkSky.N.Loads.Combined.RDS", overwrite = TRUE)
+file.remove("darkSky.N.Loads.Combined.RDS")
+
 
 
 rm(time, loads, df, x, OctoberToBeAdded, MarchToBeRemoved, temp, addAfterIndex, addAfterIndexList, addExtraLoadList, i, remove)
