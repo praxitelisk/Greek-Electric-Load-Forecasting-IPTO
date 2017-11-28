@@ -8,7 +8,7 @@ library("Boruta")
 
 startTime <- proc.time()[3]
 
-#creating the train and test set splits####
+#creating the train and test set splits#################
 splitEvalSet = 365
 splitTestSet = splitEvalSet + 365
 len = dim(final.Data.Set)[1]
@@ -20,6 +20,31 @@ train.and.evalSet = final.Data.Set[1:(len - splitEvalSet), ]
 testSet = final.Data.Set[(len - splitEvalSet + 1):len, ]
 
 
+####create the train, evaluation and test Set###################################
+
+full.list.of.features = names(final.Data.Set)
+full.list.of.features = full.list.of.features[-grep("^Loads|time|weekday|icon|^day.of.week$|^day.of.year$|yesterday.weather.measures.day.of.week|yesterday.weather.measures.day.of.year|temperature|windBearing.[0-9]+$", full.list.of.features)]
+
+
+trainSet =
+  subset(trainSet, select = grep(paste(full.list.of.features, collapse = "|"), names(trainSet)))
+
+
+evaluationSet =
+  subset(evaluationSet, select = grep(paste(full.list.of.features, collapse = "|"), names(evaluationSet)))
+
+
+train.and.evalSet =
+  subset(train.and.evalSet, select = grep(paste(full.list.of.features, collapse = "|"), names(train.and.evalSet)))
+
+
+testSet =
+  subset(testSet, select = grep(paste(full.list.of.features, collapse = "|"), names(testSet)))
+
+
+
+#create the lists which store the best parameters######################################
+
 #if (!exists("best.rule.parameters.fs")) {
 best.rule.parameters.fs = list()
 best.rule.fit.fs = list()
@@ -27,6 +52,7 @@ best.rule.prediction.fs = list()
 #}
 
 
+#stating grid search - model selection################################################
 for(i in 1:24) {
   
   assign(paste("min.mape.", i-1, sep=""), 1000000)
@@ -44,7 +70,7 @@ for(i in 1:24) {
     
     #add the response variable in trainSet
     FeaturesVariables[paste("Loads", i-1, sep=".")] = 
-      trainSet[paste("Loads", i-1, sep=".")]
+      final.Data.Set[1:dim(trainSet)[1], paste("Loads", i-1, sep=".")]
     
     
     set.seed(123)
@@ -52,14 +78,21 @@ for(i in 1:24) {
            cubist(x = FeaturesVariables[-grep(paste("^Loads", i-1, sep="."), names(FeaturesVariables))], y = FeaturesVariables[[paste("Loads", i-1, sep=".")]], committees = 1, cubistControl(unbiased = unbiasedFlag)))
     
     
+    FeaturesVariables[paste("Loads", i-1, sep=".")] = NULL
+    
+    
+    #create the predictor.df data.frame for predictions####
     FeaturesVariables = 
       trainSet[list.of.features]
     
     
-    #create the predictor.df data.frame for predictions####
     predictor.df = data.frame()
     predictor.df = FeaturesVariables[0, ]
     predictor.df = rbind(predictor.df, evaluationSet[names(evaluationSet) %in% names(predictor.df)])
+    
+    
+    evaluationSet[paste("Loads", i-1, sep=".")] = 
+      final.Data.Set[(len - splitTestSet + 1):(len - splitEvalSet), paste("Loads", i-1, sep=".")]
     
     
     assign(paste("prediction.rule", i-1, sep="."), predict(get(paste("fit.rule",i-1,sep=".")), predictor.df))
@@ -153,6 +186,7 @@ for(i in 1:24) {
     }
     
     
+    evaluationSet[paste("Loads", i-1, sep=".")] = NULL
     
     
     cat("elapsed time in minutes: ", (proc.time()[3]-startTime)/60,"\n")
@@ -185,7 +219,7 @@ for(i in 1:24) {
   
   #add the response variable in trainSet
   FeaturesVariables[paste("Loads", i-1, sep=".")] = 
-    train.and.evalSet[paste("Loads", i-1, sep=".")]
+    final.Data.Set[1:dim(train.and.evalSet)[1], paste("Loads", i-1, sep=".")]
   
   
   set.seed(123)
@@ -196,6 +230,7 @@ for(i in 1:24) {
   FeaturesVariables[paste("Loads", i-1, sep=".")] = NULL
   
   
+  #make the prediction from train-eval set###########################
   FeaturesVariables =
     train.and.evalSet[list.of.features]
   
@@ -205,6 +240,11 @@ for(i in 1:24) {
   predictor.df = rbind(predictor.df, testSet[names(testSet) %in% names(predictor.df)])
   
   
+  testSet[paste("Loads", i-1, sep=".")] = 
+    final.Data.Set[(len - splitEvalSet + 1):len, paste("Loads", i-1, sep=".")]
+  
+  
+  #make the prediction
   assign(paste("prediction.rule", i-1, sep="."), predict(get(paste("fit.rule",i-1,sep=".")), predictor.df))
   
   
@@ -232,6 +272,7 @@ for(i in 1:24) {
   rmse.rule.fs.ms[[paste("rmse.rule",i-1,sep=".")]] = temp.rmse
   
   
+  testSet[paste("Loads", i-1, sep=".")] = NULL
 }
 
 

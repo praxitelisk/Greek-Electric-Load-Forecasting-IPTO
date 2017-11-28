@@ -24,7 +24,7 @@ for(i in 1:24) {
   
   
   #perform feature selection per target variable
-  assign(paste("boruta.train", i-1, sep="."), Boruta(as.formula(paste("Loads.", i-1, "~.", sep="")) , data = trainSet, doTrace = 2, maxRuns = 100, num.threads = 2))
+  assign(paste("boruta.train", i-1, sep = "."), Boruta(as.formula(paste("Loads.", i-1, "~.", sep="")) , data = trainSet, doTrace = 2, maxRuns = 100, num.threads = 2))
   
   
   #remove the target variable
@@ -32,7 +32,7 @@ for(i in 1:24) {
   
   
   #get the most important features per Loads.i
-  final.boruta.list2[[paste("boruta.train",i-1,sep=".")]] =
+  final.boruta.list2[[paste("boruta.train", i-1, sep=".")]] =
     TentativeRoughFix(get(paste("boruta.train", i-1, sep=".")))
   
   

@@ -6,6 +6,14 @@
 library("lubridate")
 
 
+splitEvalSet = 365
+splitTestSet = splitEvalSet + 365
+len = dim(final.Data.Set)[1]
+
+
+testSet = final.Data.Set[(len - splitEvalSet + 1):len, ]
+
+
 time = 
   darkSky.N.Loads.Combined$time[which(darkSky.N.Loads.Combined$time == testSet$time[1]):nrow(darkSky.N.Loads.Combined)]
 

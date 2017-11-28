@@ -9,7 +9,7 @@ library("e1071")
 #start measuring time#####
 startTime <- proc.time()[3]
 
-#creating the train and test set splits####
+#creating the train and test set splits#################
 splitEvalSet = 365
 splitTestSet = splitEvalSet + 365
 len = dim(final.Data.Set)[1]
@@ -20,8 +20,30 @@ evaluationSet = final.Data.Set[(len-splitTestSet + 1):(len - splitEvalSet), ]
 train.and.evalSet = final.Data.Set[1:(len - splitEvalSet), ]
 testSet = final.Data.Set[(len - splitEvalSet + 1):len, ]
 
+####create the train, evaluation and test Set###################################
 
-#create the lists which store the best parameters
+full.list.of.features = names(final.Data.Set)
+full.list.of.features = full.list.of.features[-grep("^Loads|time|weekday|icon|^day.of.week$|^day.of.year$|yesterday.weather.measures.day.of.week|yesterday.weather.measures.day.of.year|temperature|windBearing.[0-9]+$", full.list.of.features)]
+
+
+trainSet =
+  subset(trainSet, select = grep(paste(full.list.of.features, collapse = "|"), names(trainSet)))
+
+
+evaluationSet =
+  subset(evaluationSet, select = grep(paste(full.list.of.features, collapse = "|"), names(evaluationSet)))
+
+
+train.and.evalSet =
+  subset(train.and.evalSet, select = grep(paste(full.list.of.features, collapse = "|"), names(train.and.evalSet)))
+
+
+testSet =
+  subset(testSet, select = grep(paste(full.list.of.features, collapse = "|"), names(testSet)))
+
+
+#create the lists which store the best parameters######################################
+
 #if (!exists("best.svm.parameters.fs")) {
   best.svm.parameters.fs = list()
   best.svm.fit.fs = list()
@@ -29,12 +51,12 @@ testSet = final.Data.Set[(len - splitEvalSet + 1):len, ]
 #}
 
 
-
+#stating grid search - model selection################################################
 for(i in 1:24) {
   
   assign(paste("min.mape.", i-1, sep=""), 1000000)
   
-  gammaValues = 5 *  10 ^(-5:-2) #10^(-4) #
+  gammaValues = 5 *  10 ^(-6:-3) #10^(-4) #
   costValues = 2 ^ (2:14) #(6)
   
   
@@ -55,7 +77,7 @@ for(i in 1:24) {
       
       #add the response variable in trainSet
       FeaturesVariables[paste("Loads", i-1, sep=".")] = 
-        trainSet[paste("Loads", i-1, sep=".")]
+        final.Data.Set[1:dim(trainSet)[1], paste("Loads", i-1, sep=".")]
       
       
       #train a model####
@@ -75,6 +97,10 @@ for(i in 1:24) {
       predictor.df = data.frame()
       predictor.df = FeaturesVariables[0, ]
       predictor.df = rbind(predictor.df, evaluationSet[names(evaluationSet) %in% names(predictor.df)])
+      
+      
+      evaluationSet[paste("Loads", i-1, sep=".")] = 
+        final.Data.Set[(len - splitTestSet + 1):(len - splitEvalSet), paste("Loads", i-1, sep=".")]
       
       
       #make the prediction
@@ -123,6 +149,9 @@ for(i in 1:24) {
         best.svm.prediction.fs[[paste("prediction.svm",i-1,sep=".")]] = get(paste("prediction.svm",i-1, sep="."))
         
       }
+      
+      
+      evaluationSet[paste("Loads", i-1, sep=".")] = NULL
       
       cat("elapsed time in minutes: ", (proc.time()[3]-startTime)/60,"\n")
       
@@ -210,7 +239,7 @@ for(i in 1:24) {
   
   #add the response variable in trainSet
   FeaturesVariables[paste("Loads", i-1, sep=".")] = 
-    train.and.evalSet[paste("Loads", i-1, sep=".")]
+    final.Data.Set[1:dim(train.and.evalSet)[1], paste("Loads", i-1, sep=".")]
   
   
   #train a model####
@@ -223,7 +252,7 @@ for(i in 1:24) {
   
   
   
-  #make the prediction from train-eval set####
+  #make the prediction from train-eval set#########################
   FeaturesVariables = 
     train.and.evalSet[list.of.features]
   
@@ -231,6 +260,10 @@ for(i in 1:24) {
   predictor.df = data.frame()
   predictor.df = FeaturesVariables[0, ]
   predictor.df = rbind(predictor.df, testSet[names(testSet) %in% names(predictor.df)])
+  
+  
+  testSet[paste("Loads", i-1, sep=".")] = 
+    final.Data.Set[(len - splitEvalSet + 1):len, paste("Loads", i-1, sep=".")]
   
   
   #make the prediction
@@ -260,6 +293,9 @@ for(i in 1:24) {
   mae.svm.fs.ms[[paste("mae.svm",i-1,sep=".")]] = temp.mae
   mse.svm.fs.ms[[paste("mse.svm",i-1,sep=".")]] = temp.mse
   rmse.svm.fs.ms[[paste("rmse.svm",i-1,sep=".")]] = temp.rmse
+  
+  
+  testSet[paste("Loads", i-1, sep=".")] = NULL
   
   
 } #end of models
@@ -304,4 +340,5 @@ rm(list=ls(pattern="mse.svm.[0-9]"))
 rm(list=ls(pattern="rmse.svm.[0-9]"))
 
 
-#elapsed time in minutes:  63.58
+#elapsed time in minutes:  140
+rm(startTime)
