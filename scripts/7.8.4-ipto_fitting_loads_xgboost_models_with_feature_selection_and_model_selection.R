@@ -9,7 +9,7 @@ library("Boruta")
 
 startTime <- proc.time()[3]
 
-#creating the train and test set splits####
+#creating the train and test set splits#################
 splitEvalSet = 365
 splitTestSet = splitEvalSet + 365
 len = dim(final.Data.Set)[1]
@@ -20,22 +20,49 @@ evaluationSet = final.Data.Set[(len-splitTestSet + 1):(len - splitEvalSet), ]
 train.and.evalSet = final.Data.Set[1:(len - splitEvalSet), ]
 testSet = final.Data.Set[(len - splitEvalSet + 1):len, ]
 
+####create the train, evaluation and test Set###################################
+
+full.list.of.features = names(final.Data.Set)
+full.list.of.features = full.list.of.features[-grep("^Loads|time|weekday|icon|^day.of.week$|^day.of.year$|yesterday.weather.measures.day.of.week|yesterday.weather.measures.day.of.year|temperature|windBearing.[0-9]+$", full.list.of.features)]
+
+
+trainSet =
+  subset(trainSet, select = grep(paste(full.list.of.features, collapse = "|"), names(trainSet)))
+
+
+evaluationSet =
+  subset(evaluationSet, select = grep(paste(full.list.of.features, collapse = "|"), names(evaluationSet)))
+
+
+train.and.evalSet =
+  subset(train.and.evalSet, select = grep(paste(full.list.of.features, collapse = "|"), names(train.and.evalSet)))
+
+
+testSet =
+  subset(testSet, select = grep(paste(full.list.of.features, collapse = "|"), names(testSet)))
+
+
+#create the lists which store the best parameters######################################
 
 #if (!exists("best.xgboost.parameters.fs")) {
-  best.xgboost.parameters.fs = list()
-  best.xgboost.fit.fs = list()
-  best.xgboost.prediction.fs = list()
+
+rm(experiments.xgboost.ms)
+
+best.xgboost.parameters.fs = list()
+best.xgboost.fit.fs = list()
+best.xgboost.prediction.fs = list()
 #}
 
 
 
+#stating grid search - model selection################################################
 for(i in 1:24) {
   
   assign(paste("min.mape.", i-1, sep=""), 1000000)
   
-  for (etaValue in seq(0.1, 0.5, 0.1)) {
+  for (etaValue in seq(0.01, 0.1, 0.03)) {
     for(depthValue in seq(2, 5, 1)) {
-      for(roundValue in seq(100, 1200, 100)) {
+      for(roundValue in seq(100, 2000, 100)) {
         
         
         cat("\n\n tuning model: Load.", i-1, " with eta = ", etaValue, ", depth = ", depthValue,", round = ", roundValue ,"\n\n")
@@ -52,12 +79,13 @@ for(i in 1:24) {
           trainSet[list.of.features]
         
         
-        dtrain <- xgb.DMatrix(data = data.matrix(FeaturesVariables), label=trainSet[[paste("Loads", i-1, sep=".")]])
+        
+        dtrain <- xgb.DMatrix(data = data.matrix(FeaturesVariables), label = final.Data.Set[1:dim(trainSet)[1], paste("Loads", i-1, sep=".")])
         
         
         set.seed(123)
         assign(paste("fit.xgboost", i-1, sep="."), 
-               xgboost(data = dtrain, max_depth = depthValue, eta = etaValue, nrounds = roundValue, nthread = 3, verbose = 0, booster= "gbtree", objective = "reg:linear"))
+               xgboost(data = dtrain, max_depth = depthValue, eta = etaValue, nrounds = roundValue, nthread = 2, verbose = 0, booster= "gbtree", objective = "reg:linear"))
         
   
         #create the predictor.df data.frame for predictions####
@@ -72,6 +100,11 @@ for(i in 1:24) {
         predictor.df = rbind(predictor.df, evaluationSet[names(evaluationSet) %in% names(predictor.df)])
         
         
+        evaluationSet[paste("Loads", i-1, sep=".")] = 
+          final.Data.Set[(len - splitTestSet + 1):(len - splitEvalSet), paste("Loads", i-1, sep=".")]
+        
+        
+        #make the prediction
         assign(paste("prediction.xgboost", i-1, sep="."), predict(get(paste("fit.xgboost",i-1,sep=".")), data.matrix(predictor.df)))
         
         
@@ -170,10 +203,13 @@ for(i in 1:24) {
           rm(temp)
         }
         
+        
+        evaluationSet[paste("Loads", i-1, sep=".")] = NULL
+        
+        
         cat("elapsed time in minutes: ", (proc.time()[3]-startTime)/60,"\n")
         
 
-        
       }
     }
   }
@@ -202,17 +238,18 @@ for(i in 1:24) {
     train.and.evalSet[list.of.features]
   
 
-  dtrain <- xgb.DMatrix(data = data.matrix(FeaturesVariables), label=train.and.evalSet[[paste("Loads", i-1, sep=".")]])
+  dtrain <- xgb.DMatrix(data = data.matrix(FeaturesVariables), label = final.Data.Set[1:dim(train.and.evalSet)[1], paste("Loads", i-1, sep=".")])
   
   
   set.seed(123)
   assign(paste("fit.xgboost", i-1, sep="."), 
-         xgboost(data = dtrain, max_depth = best.xgboost.parameters.fs[[paste("best.xgboost.param.", i-1, sep="")]][["depth"]], eta = best.xgboost.parameters.fs[[paste("best.xgboost.param.", i-1, sep="")]][["eta"]], nrounds = best.xgboost.parameters.fs[[paste("best.xgboost.param.", i-1, sep="")]][["round"]], nthread = 3, verbose = 0, booster= "gbtree", objective = "reg:linear"))
+         xgboost(data = dtrain, max_depth = best.xgboost.parameters.fs[[paste("best.xgboost.param.", i-1, sep="")]][["depth"]], eta = best.xgboost.parameters.fs[[paste("best.xgboost.param.", i-1, sep="")]][["eta"]], nrounds = best.xgboost.parameters.fs[[paste("best.xgboost.param.", i-1, sep="")]][["round"]], nthread = 2, verbose = 0, booster= "gbtree", objective = "reg:linear"))
   
   
   FeaturesVariables[paste("Loads", i-1, sep=".")] = NULL
 
   
+  #make the prediction from train-eval set#########################
   FeaturesVariables =
     train.and.evalSet[list.of.features]
   
@@ -222,6 +259,11 @@ for(i in 1:24) {
   predictor.df = rbind(predictor.df, testSet[names(testSet) %in% names(predictor.df)])
   
   
+  testSet[paste("Loads", i-1, sep=".")] = 
+    final.Data.Set[(len - splitEvalSet + 1):len, paste("Loads", i-1, sep=".")]
+  
+  
+  #make the prediction
   assign(paste("prediction.xgboost", i-1, sep="."), predict(get(paste("fit.xgboost",i-1,sep=".")), data.matrix(predictor.df)))
   
   
@@ -249,6 +291,7 @@ for(i in 1:24) {
   rmse.xgboost.fs.ms[[paste("rmse.xgboost",i-1,sep=".")]] = temp.rmse  
   
   
+  testSet[paste("Loads", i-1, sep=".")] = NULL
 }
 
 
@@ -289,3 +332,6 @@ rm(etaValue)
 rm(roundValue)
 rm(depthValue)
 rm(i)
+
+
+rm(startTime)

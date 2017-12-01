@@ -16,10 +16,10 @@ for(i in 1:24) {
   #pred.select = c(prediction.svm.fs.ms[[i]], prediction.nn.fs.ms[[i]], prediction.xgboost.fs.ms[[i]], prediction.randomForest.fs.ms[[i]], prediction.rule.fs.ms[[i]], prediction.knn.fs.ms[[i]])
   
   str.model.select = c("svm.fs.ms","rule.fs.ms", "xgboost.fs.ms")
-  str.pred.select = c("prediction.svm.fs.ms", "prediction.rule.fs.ms")
+  str.pred.select = c("prediction.svm.fs.ms", "prediction.rule.fs.ms", "prediction.xgboost.fs.ms")
   
-  model.select = c(mape.svm.fs.ms[[i]], mape.rule.fs.ms[[i]])
-  pred.select = c(prediction.svm.fs.ms[[i]], prediction.rule.fs.ms[[i]])
+  model.select = c(mape.svm.fs.ms[[i]], mape.rule.fs.ms[[i]], mape.xgboost.fs.ms[[i]])
+  pred.select = c(prediction.svm.fs.ms[[i]], prediction.rule.fs.ms[[i]], prediction.xgboost.fs.ms[[i]])
   
   
   #cat("best mape for ", i-1 ,"th hour: ", min(model.select), ", calculated from model: ", str.model.select[which.min(model.select)] ,", fit.", str.model.select[which.min(model.select)], ".", i-1, " prediction: ", str.pred.select[which.min(model.select)], ".", i-1, "\n", sep = "")

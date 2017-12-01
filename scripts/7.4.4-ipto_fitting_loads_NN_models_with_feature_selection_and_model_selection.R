@@ -22,22 +22,49 @@ train.and.evalSet = final.Data.Set[1:(len - splitEvalSet), ]
 testSet = final.Data.Set[(len - splitEvalSet + 1):len, ]
 
 
-#create the lists which store the best parameters
+####create the train, evaluation and test Set###################################
+
+full.list.of.features = names(final.Data.Set)
+full.list.of.features = full.list.of.features[-grep("^Loads|time|weekday|icon|^day.of.week$|^day.of.year$|yesterday.weather.measures.day.of.week|yesterday.weather.measures.day.of.year|temperature|windBearing.[0-9]+$", full.list.of.features)]
+
+
+trainSet =
+  subset(trainSet, select = grep(paste(full.list.of.features, collapse = "|"), names(trainSet)))
+
+
+evaluationSet =
+  subset(evaluationSet, select = grep(paste(full.list.of.features, collapse = "|"), names(evaluationSet)))
+
+
+train.and.evalSet =
+  subset(train.and.evalSet, select = grep(paste(full.list.of.features, collapse = "|"), names(train.and.evalSet)))
+
+
+testSet =
+  subset(testSet, select = grep(paste(full.list.of.features, collapse = "|"), names(testSet)))
+
+
+
+#create the lists which store the best parameters######################################
+
 #if (!exists("best.nn.parameters.fs")) {
+
+rm(experiments.nn.ms)
+
 best.nn.parameters.fs = list()
 best.nn.fit.fs = list()
 best.nn.prediction.fs = list()
 #}
 
 
-
+#stating grid search - model selection################################################
 for(i in 1:24) {
   
   assign(paste("min.mape.", i-1, sep=""), 1000000)
   
-  for(learningRateValue in seq(0.1, 0.5, 0.1)) {
-    for(hiddenLayerNeurons in seq(2, 10, 1)) {
-      for(maxitValue in seq(100, 300, 100)) {
+  for(learningRateValue in seq(0.01, 0.1, 0.03)) {
+    for(hiddenLayerNeurons in seq(5, 30, 5)) {
+      for(maxitValue in seq(100, 2000, 100)) {
         
         cat("\n\n tuning model: Load.",i-1,"with feature selection and learning rate ", learningRateValue," hiddenLayerNeurons = ", hiddenLayerNeurons," maxitValue = ", maxitValue," \n")
         
@@ -53,7 +80,7 @@ for(i in 1:24) {
         
         #add the response variable in trainSet
         FeaturesVariables[paste("Loads", i-1, sep=".")] = 
-          trainSet[paste("Loads", i-1, sep=".")]
+          final.Data.Set[1:dim(trainSet)[1], paste("Loads", i-1, sep=".")]
         
         
         #scaling the train set####
@@ -71,7 +98,7 @@ for(i in 1:24) {
         #train a model####
         assign(paste("fit.nn", i-1, sep="."), 
                mlp(FeaturesVariables.scale[-grep(paste("^Loads", i-1, sep="."), names(FeaturesVariables.scale))], FeaturesVariables.scale[paste("Loads", i-1, sep=".")], hiddenLayerNeurons, 
-                   maxit = maxitValue, initFuncParams = 0, learnFuncParams = learningRateValue, shufflePatterns = F, linOut = T, learnFunc = "Rprop"))
+                   maxit = maxitValue, initFuncParams = 0, learnFuncParams = learningRateValue, shufflePatterns = F, linOut = T, learnFunc = "BackpropMomentum"))
         
         
         #assign(paste("fit.nn", i-1, sep="."), 
@@ -103,6 +130,9 @@ for(i in 1:24) {
   
         
         #denormalize the predictions
+        evaluationSet[paste("Loads", i-1, sep=".")] = 
+          final.Data.Set[(len - splitTestSet + 1):(len - splitEvalSet), paste("Loads", i-1, sep=".")]
+        
         load.scale = evaluationSet[paste("Loads", i-1, sep=".")]
         load.scale = normalizeData(load.scale, type="0_1")
         #load.scale = scale(load.scale, center = min(load.scale), scale = max(load.scale) - min(load.scale))
@@ -160,6 +190,7 @@ for(i in 1:24) {
         
         cat("elapsed time in minutes: ", (proc.time()[3]-startTime)/60,"\n")
         
+        evaluationSet[paste("Loads", i-1, sep=".")] = NULL
         
         
         #saving each tuning experiments####
@@ -212,6 +243,8 @@ for(i in 1:24) {
           rm(temp)
         }
         
+        
+        
       }
     }
   }
@@ -245,8 +278,8 @@ for(i in 1:24) {
 
 
   #add the response variable in trainSet
-  FeaturesVariables[paste("Loads", i-1, sep=".")] =
-    train.and.evalSet[paste("Loads", i-1, sep=".")]
+  FeaturesVariables[paste("Loads", i-1, sep=".")] = 
+    final.Data.Set[1:dim(train.and.evalSet)[1], paste("Loads", i-1, sep=".")]
 
 
   #scaling the train set####
@@ -264,7 +297,7 @@ for(i in 1:24) {
   #train a model####
   assign(paste("fit.nn", i-1, sep="."), 
          mlp(FeaturesVariables.scale[-grep(paste("^Loads", i-1, sep="."), names(FeaturesVariables.scale))], FeaturesVariables.scale[paste("Loads", i-1, sep=".")], size=best.nn.parameters.fs[[paste("best.nn.param.", i-1, sep="")]][["hiddenLayerNeurons"]], 
-             maxit = best.nn.parameters.fs[[paste("best.nn.param.", i-1, sep="")]][["maxitValue"]], initFuncParams = 0, learnFuncParams = best.nn.parameters.fs[[paste("best.nn.param.", i-1, sep="")]][["learningRate"]], shufflePatterns = F, linOut = T, learnFunc = "Rprop"))
+             maxit = best.nn.parameters.fs[[paste("best.nn.param.", i-1, sep="")]][["maxitValue"]], initFuncParams = 0, learnFuncParams = best.nn.parameters.fs[[paste("best.nn.param.", i-1, sep="")]][["learningRate"]], shufflePatterns = F, linOut = T, learnFunc = "BackpropMomentum"))
   
   
   #assign(paste("fit.nn", i-1, sep="."),
@@ -297,6 +330,10 @@ for(i in 1:24) {
 
 
   #denormalize the predictions####
+  
+  testSet[paste("Loads", i-1, sep=".")] = 
+    final.Data.Set[(len - splitEvalSet + 1):len, paste("Loads", i-1, sep=".")]
+  
   load.scale = testSet[paste("Loads", i-1, sep=".")]
   load.scale = normalizeData(load.scale, type="0_1")
   #load.scale = scale(load.scale, center = min(load.scale), scale = max(load.scale) - min(load.scale))
@@ -332,6 +369,8 @@ for(i in 1:24) {
   mse.nn.fs.ms[[paste("mse.nn",i-1,sep=".")]] = temp.mse
   rmse.nn.fs.ms[[paste("rmse.nn",i-1,sep=".")]] = temp.rmse
 
+  
+  testSet[paste("Loads", i-1, sep=".")] = NULL
 
 } #end of models
 
