@@ -7,9 +7,10 @@ library("FNN")
 library("Boruta")
 
 
+#start measuring time#####
 startTime <- proc.time()[3]
 
-#creating the train and test set splits####
+#creating the train and test set splits#################
 splitEvalSet = 365
 splitTestSet = splitEvalSet + 365
 len = dim(final.Data.Set)[1]
@@ -20,6 +21,29 @@ evaluationSet = final.Data.Set[(len-splitTestSet + 1):(len - splitEvalSet), ]
 train.and.evalSet = final.Data.Set[1:(len - splitEvalSet), ]
 testSet = final.Data.Set[(len - splitEvalSet + 1):len, ]
 
+####create the train, evaluation and test Set###################################
+
+full.list.of.features = names(final.Data.Set)
+full.list.of.features = full.list.of.features[-grep("^Loads|time|weekday|icon|^day.of.week$|^day.of.year$|yesterday.weather.measures.day.of.week|yesterday.weather.measures.day.of.year|temperature|windBearing.[0-9]+$", full.list.of.features)]
+
+
+trainSet =
+  subset(trainSet, select = grep(paste(full.list.of.features, collapse = "|"), names(trainSet)))
+
+
+evaluationSet =
+  subset(evaluationSet, select = grep(paste(full.list.of.features, collapse = "|"), names(evaluationSet)))
+
+
+train.and.evalSet =
+  subset(train.and.evalSet, select = grep(paste(full.list.of.features, collapse = "|"), names(train.and.evalSet)))
+
+
+testSet =
+  subset(testSet, select = grep(paste(full.list.of.features, collapse = "|"), names(testSet)))
+
+
+#create the lists which store the best parameters######################################
 
 #if (!exists("best.knn.parameters.fs")) {
 best.knn.parameters.fs = list()
@@ -63,10 +87,10 @@ for(i in 1:24) {
       #train the model and initialize random variables seed
       set.seed(123)
       assign(paste("fit.knn", i-1, sep="."), 
-             knn.reg(FeaturesVariables, test = NULL, y = unlist(trainSet[paste("Loads", i-1, sep=".")]), k=neighbors, algorithm = algorithm.list[j]))
+             knn.reg(FeaturesVariables, test = NULL, y = unlist(final.Data.Set[1:dim(trainSet)[1], paste("Loads", i-1, sep=".")]), k=neighbors, algorithm = algorithm.list[j]))
       
       
-      FeaturesVariables[paste("Loads", i-1, sep=".")] = NULL
+      #FeaturesVariables[paste("Loads", i-1, sep=".")] = NULL
       
       
       #create the predictor.df data.frame for predictions####
@@ -78,6 +102,10 @@ for(i in 1:24) {
       predictor.df = data.frame()
       predictor.df = FeaturesVariables[0, ]
       predictor.df = rbind(predictor.df, evaluationSet[names(evaluationSet) %in% names(predictor.df)])
+      
+      
+      evaluationSet[paste("Loads", i-1, sep=".")] = 
+        final.Data.Set[(len - splitTestSet + 1):(len - splitEvalSet), paste("Loads", i-1, sep=".")]
       
       
       #convert all factors to numeric because knn can't handle factor variables####
@@ -105,7 +133,7 @@ for(i in 1:24) {
       
       
       assign(paste("prediction.knn", i-1, sep="."), 
-             knn.reg(FeaturesVariables, test = predictor.df, y=unlist(trainSet[paste("Loads", i-1, sep=".")]), k=neighbors, algorithm=algorithm.list[j]))        
+             knn.reg(FeaturesVariables, test = predictor.df, y = unlist(final.Data.Set[1:dim(trainSet)[1], paste("Loads", i-1, sep=".")]), k=neighbors, algorithm=algorithm.list[j]))        
       
       
       #calculate mape
@@ -200,6 +228,9 @@ for(i in 1:24) {
         rm(temp)
       }
       
+      
+      evaluationSet[paste("Loads", i-1, sep=".")] = NULL
+      
       cat("elapsed time in minutes: ", (proc.time()[3]-startTime)/60,"\n")
       
       
@@ -245,7 +276,7 @@ for(i in 1:24) {
   #train the model and initialize random variables seed
   set.seed(123)
   assign(paste("fit.knn", i-1, sep="."), 
-         knn.reg(FeaturesVariables, test = NULL, y = unlist(train.and.evalSet[paste("Loads", i-1, sep=".")]), k=as.numeric(best.knn.parameters.fs[[paste("best.knn.param.", i-1, sep="")]][["neighbors"]]), algorithm = best.knn.parameters.fs[[paste("best.knn.param.", i-1, sep="")]][["algo"]]))
+         knn.reg(FeaturesVariables, test = NULL, y = unlist(final.Data.Set[1:dim(train.and.evalSet)[1], paste("Loads", i-1, sep=".")]), k=as.numeric(best.knn.parameters.fs[[paste("best.knn.param.", i-1, sep="")]][["neighbors"]]), algorithm = best.knn.parameters.fs[[paste("best.knn.param.", i-1, sep="")]][["algo"]]))
   
   
   FeaturesVariables[paste("Loads", i-1, sep=".")] = NULL
@@ -261,6 +292,9 @@ for(i in 1:24) {
   predictor.df = FeaturesVariables[0, ]
   predictor.df = rbind(predictor.df, testSet[names(testSet) %in% names(predictor.df)])
   
+  
+  testSet[paste("Loads", i-1, sep=".")] = 
+    final.Data.Set[(len - splitEvalSet + 1):len, paste("Loads", i-1, sep=".")]
   
   
   #convert all factors to numeric because knn can't handle factor variables####
@@ -315,7 +349,9 @@ for(i in 1:24) {
   rmse.knn.fs.ms[[paste("rmse.knn",i-1,sep=".")]] = temp.rmse  
   
   
-}
+  testSet[paste("Loads", i-1, sep=".")] = NULL
+  
+} #end of models
 
 
 #calculate the mean mape####
