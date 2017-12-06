@@ -322,7 +322,7 @@ for(i in 1:24) {
   rm(k)
   
   assign(paste("prediction.knn", i-1, sep="."), 
-         knn.reg(FeaturesVariables, test = predictor.df, y=unlist(train.and.evalSet[paste("Loads", i-1, sep=".")]), k=as.numeric(best.knn.parameters.fs[[paste("best.knn.param.", i-1, sep="")]][["neighbors"]]), algorithm = best.knn.parameters.fs[[paste("best.knn.param.", i-1, sep="")]][["algo"]]))        
+         knn.reg(FeaturesVariables, test = predictor.df, y = unlist(final.Data.Set[1:dim(train.and.evalSet)[1], paste("Loads", i-1, sep=".")]), k=as.numeric(best.knn.parameters.fs[[paste("best.knn.param.", i-1, sep="")]][["neighbors"]]), algorithm = best.knn.parameters.fs[[paste("best.knn.param.", i-1, sep="")]][["algo"]]))        
   
   
   #calculate mape
