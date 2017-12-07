@@ -316,5 +316,6 @@ rm(list=ls(pattern="rmse.rule.[0-9]"))
 rm(list=ls(pattern="min.mape."))
 rm(list=ls(pattern="temp."))
 rm(unbiasedFlag)
+rm(committee)
 rm(i)
 

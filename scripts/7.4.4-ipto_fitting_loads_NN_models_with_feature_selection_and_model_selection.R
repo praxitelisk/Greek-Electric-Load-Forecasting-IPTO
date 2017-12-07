@@ -64,7 +64,7 @@ for(i in 1:24) {
   
   for(learningRateValue in seq(0.01, 0.1, 0.03)) {
     for(hiddenLayerNeurons in seq(5, 30, 5)) {
-      for(maxitValue in seq(100, 2000, 100)) {
+      for(maxitValue in seq(100, 1000, 100)) {
         
         cat("\n\n tuning model: Load.",i-1,"with feature selection and learning rate ", learningRateValue," hiddenLayerNeurons = ", hiddenLayerNeurons," maxitValue = ", maxitValue," \n")
         
@@ -98,7 +98,7 @@ for(i in 1:24) {
         #train a model####
         assign(paste("fit.nn", i-1, sep="."), 
                mlp(FeaturesVariables.scale[-grep(paste("^Loads", i-1, sep="."), names(FeaturesVariables.scale))], FeaturesVariables.scale[paste("Loads", i-1, sep=".")], hiddenLayerNeurons, 
-                   maxit = maxitValue, initFuncParams = 0, learnFuncParams = learningRateValue, shufflePatterns = F, linOut = T, learnFunc = "BackpropMomentum"))
+                   maxit = maxitValue, initFuncParams = 0, learnFuncParams = learningRateValue, shufflePatterns = F, linOut = T, learnFunc = "Rprop"))
         
         
         #assign(paste("fit.nn", i-1, sep="."), 
@@ -297,7 +297,7 @@ for(i in 1:24) {
   #train a model####
   assign(paste("fit.nn", i-1, sep="."), 
          mlp(FeaturesVariables.scale[-grep(paste("^Loads", i-1, sep="."), names(FeaturesVariables.scale))], FeaturesVariables.scale[paste("Loads", i-1, sep=".")], size=best.nn.parameters.fs[[paste("best.nn.param.", i-1, sep="")]][["hiddenLayerNeurons"]], 
-             maxit = best.nn.parameters.fs[[paste("best.nn.param.", i-1, sep="")]][["maxitValue"]], initFuncParams = 0, learnFuncParams = best.nn.parameters.fs[[paste("best.nn.param.", i-1, sep="")]][["learningRate"]], shufflePatterns = F, linOut = T, learnFunc = "BackpropMomentum"))
+             maxit = best.nn.parameters.fs[[paste("best.nn.param.", i-1, sep="")]][["maxitValue"]], initFuncParams = 0, learnFuncParams = best.nn.parameters.fs[[paste("best.nn.param.", i-1, sep="")]][["learningRate"]], shufflePatterns = F, linOut = T, learnFunc = "Rprop"))
   
   
   #assign(paste("fit.nn", i-1, sep="."),
@@ -396,7 +396,7 @@ cat("mean nn rmse: ", round(mean.rmse.nn.fs.ms,5), "\n")
 
 
 cat("elapsed time in minutes: ", (proc.time()[3] - startTime)/60,"\n")
-
+rm(startTime)
 
 
 rm(list=ls(pattern="min.mape."))
