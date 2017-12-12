@@ -56,17 +56,20 @@ best.nn.fit.fs = list()
 best.nn.prediction.fs = list()
 #}
 
+learnFuncType = "Rprop"
 
-#stating grid search - model selection################################################
+
+#starting grid search - model selection################################################
 for(i in 1:24) {
   
   assign(paste("min.mape.", i-1, sep=""), 1000000)
   
-  for(learningRateValue in seq(0.01, 0.1, 0.03)) {
-    for(hiddenLayerNeurons in seq(5, 30, 5)) {
-      for(maxitValue in seq(100, 1000, 100)) {
+  
+  for(learningRateValue in seq(0.01, 0.2, 0.02)) { ###needs more learning rates for better convergence
+    for(hiddenLayerNeurons in seq(4, 20, 1)) {
+      for(maxitValue in seq(100, 2000, 100)) { ###needs more iterations for better convergence
         
-        cat("\n\n tuning model: Load.",i-1,"with feature selection and learning rate ", learningRateValue," hiddenLayerNeurons = ", hiddenLayerNeurons," maxitValue = ", maxitValue," \n")
+        cat("\n\n tuning model: Load.",i-1,"with feature selection and learning rate =", learningRateValue," hiddenLayerNeurons = ", hiddenLayerNeurons," maxitValue = ", maxitValue," \n")
         
         list.of.features = 
           getSelectedAttributes(final.boruta.list2[[i]], withTentative = F)
@@ -96,9 +99,10 @@ for(i in 1:24) {
         
         
         #train a model####
+        set.seed(123)
         assign(paste("fit.nn", i-1, sep="."), 
                mlp(FeaturesVariables.scale[-grep(paste("^Loads", i-1, sep="."), names(FeaturesVariables.scale))], FeaturesVariables.scale[paste("Loads", i-1, sep=".")], hiddenLayerNeurons, 
-                   maxit = maxitValue, initFuncParams = 0, learnFuncParams = learningRateValue, shufflePatterns = F, linOut = T, learnFunc = "Rprop"))
+                   maxit = maxitValue, learnFuncParams = learningRateValue, shufflePatterns = F, linOut = T, learnFunc = learnFuncType))
         
         
         #assign(paste("fit.nn", i-1, sep="."), 
@@ -295,9 +299,10 @@ for(i in 1:24) {
 
 
   #train a model####
+  set.seed(123)
   assign(paste("fit.nn", i-1, sep="."), 
          mlp(FeaturesVariables.scale[-grep(paste("^Loads", i-1, sep="."), names(FeaturesVariables.scale))], FeaturesVariables.scale[paste("Loads", i-1, sep=".")], size=best.nn.parameters.fs[[paste("best.nn.param.", i-1, sep="")]][["hiddenLayerNeurons"]], 
-             maxit = best.nn.parameters.fs[[paste("best.nn.param.", i-1, sep="")]][["maxitValue"]], initFuncParams = 0, learnFuncParams = best.nn.parameters.fs[[paste("best.nn.param.", i-1, sep="")]][["learningRate"]], shufflePatterns = F, linOut = T, learnFunc = "Rprop"))
+             maxit = best.nn.parameters.fs[[paste("best.nn.param.", i-1, sep="")]][["maxitValue"]], learnFuncParams = best.nn.parameters.fs[[paste("best.nn.param.", i-1, sep="")]][["learningRate"]], shufflePatterns = F, linOut = T, learnFunc = learnFuncType))
   
   
   #assign(paste("fit.nn", i-1, sep="."),
@@ -415,3 +420,5 @@ rm(list=ls(pattern="rmse.nn.[0-9]"))
 rm(hiddenLayerNeurons)
 rm(learningRateValue)
 rm(maxitValue)
+rm(learnFuncType)
+
