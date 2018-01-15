@@ -1,5 +1,7 @@
-###Adding an extra date column to loads in order to match them with
+########################################################################
+#####Adding an extra date column to loads in order to match them with
 #darkSkyAPI dates and meteorogical data.
+########################################################################
 
 library(tibble) #for add_column command
 

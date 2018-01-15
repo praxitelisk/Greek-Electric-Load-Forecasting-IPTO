@@ -18,8 +18,8 @@ time_df[time_df$month > 3 & time_df$month < 10 & (time_df$hour >= 23 | time_df$h
 
 #autumn season rushHour based on quiet hours
 #taken from greek police site: http://www.astynomia.gr/index.php?option=ozo_content&perform=view&id=3812&Itemid=0&langEN 
-time_df[(time_df$month > 9 | time_df$month < 4) & time_df$hour >= 15 & time_df$hour <= 17, ]$isRushHour = 0
-time_df[(time_df$month > 9 | time_df$month < 4) & (time_df$hour >= 22 | time_df$hour <= 6), ]$isRushHour = 0
+time_df[(time_df$month > 9 | time_df$month < 4) & time_df$hour > 15 & time_df$hour <= 17, ]$isRushHour = 0
+time_df[(time_df$month > 9 | time_df$month < 4) & (time_df$hour >= 22 | time_df$hour <= 7), ]$isRushHour = 0
 
 
 isRushHour = time_df$isRushHour

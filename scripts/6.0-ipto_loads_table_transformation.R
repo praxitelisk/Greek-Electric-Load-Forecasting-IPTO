@@ -1,5 +1,6 @@
-###there is an issue after introducing March artificial hour on March's last Sunday
-### chck it out
+################################################################
+
+################################################################
 
 library("lubridate")
 
@@ -131,7 +132,7 @@ for(i in 1:length(addAfterIndexList)) {
     darkSky.N.Loads.Combined[(addAfterIndexList[i] - 1), 12:13]
   
   
-  for(k in 14:24) {
+  for(k in 14:23) {
     
     darkSky.N.Loads.Combined[addAfterIndexList[i], k] =
       mean(c(darkSky.N.Loads.Combined[(addAfterIndexList[i] + 1), k],
@@ -139,11 +140,11 @@ for(i in 1:length(addAfterIndexList)) {
     
   }
   
-  darkSky.N.Loads.Combined[addAfterIndexList[i], 25:26] =
-    darkSky.N.Loads.Combined[(addAfterIndexList[i]+ 1), 25:26]
+  darkSky.N.Loads.Combined[addAfterIndexList[i], 24:25] =
+    darkSky.N.Loads.Combined[(addAfterIndexList[i]+ 1), 24:25]
   
   
-  for(k in 27:37) {
+  for(k in 26:35) {
     
     darkSky.N.Loads.Combined[addAfterIndexList[i], k] =
       mean(c(darkSky.N.Loads.Combined[(addAfterIndexList[i] + 1), k],

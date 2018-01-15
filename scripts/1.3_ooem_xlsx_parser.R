@@ -115,6 +115,7 @@ for(i in 1:length(ooemXLSFiles)) {
     temp = temp[1:(dim(temp)[1]-1), ]
   }
   
+  #subtract "load declerations + loses" - "loses" to get the "clean" version of prediction
   df = data.frame("ooem_predictions"= temp[, 1] - temp[, 2])
   
   ooem_predictions = rbind(ooem_predictions, df)
