@@ -18,12 +18,12 @@ time_df[time_df$month > 3 & time_df$month < 10 & (time_df$hour >= 23 | time_df$h
 
 #autumn season rushHour based on quiet hours
 #taken from greek police site: http://www.astynomia.gr/index.php?option=ozo_content&perform=view&id=3812&Itemid=0&langEN 
-time_df[(time_df$month > 9 | time_df$month < 4) & time_df$hour >= 15 & time_df$hour <= 17, ]$isRushHour = 0
-time_df[(time_df$month > 9 | time_df$month < 4) & (time_df$hour >= 22 | time_df$hour <= 6), ]$isRushHour = 0
+time_df[(time_df$month > 9 | time_df$month < 4) & time_df$hour > 15 & time_df$hour <= 17, ]$isRushHour = 0
+time_df[(time_df$month > 9 | time_df$month < 4) & (time_df$hour >= 22 | time_df$hour <= 7), ]$isRushHour = 0
 
 
-isRushHour = time_df$isRushHour
-darkSky.WeatherData =  add_column(darkSky.WeatherData, isRushHour, .after = "time")
+isQuietHour = time_df$isRushHour
+darkSky.WeatherData =  add_column(darkSky.WeatherData, isQuietHour, .after = "time")
 #darkSky.WeatherData$isRushHour = as.factor(darkSky.WeatherData$isRushHour)
 
 
@@ -33,7 +33,7 @@ cat("#isWeekend new feature####\n")
 isWeekend = as.character(darkSky.WeatherData$weekday)
 isWeekend[(isWeekend == "Saturday") | (isWeekend == "Sunday")] = 1
 isWeekend[(isWeekend != "Saturday") & (isWeekend != "Sunday") & (isWeekend != 1)] = 0
-darkSky.WeatherData =  add_column(darkSky.WeatherData, isWeekend, .after = "isRushHour")
+darkSky.WeatherData =  add_column(darkSky.WeatherData, isWeekend, .after = "isQuietHour")
 darkSky.WeatherData$isWeekend = as.factor(darkSky.WeatherData$isWeekend)
 
 
@@ -156,4 +156,4 @@ darkSky.WeatherData$isHoliday = as.factor(darkSky.WeatherData$isHoliday)
 #keep a backup####
 #backUp.DarkSky = darkSky.WeatherData
 
-rm(isRushHour, isWeekend, isHoliday, year, years, easter, time_df, hour)
+rm(isQuietHour, isWeekend, isHoliday, year, years, easter, time_df, hour)
