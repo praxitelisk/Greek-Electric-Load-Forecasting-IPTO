@@ -20,27 +20,22 @@ full.list.of.features = names(final.Data.Set)
 
 #full.list.of.features = full.list.of.features[-grep("^Loads|time|weekday|icon|windBearing.[0-9]+$|apparentTemperature|day.of.week|sine.day.of.week|cosine.day.of.week|day.of.year|cosine.day.of.year|sine.day.of.year|cloudCover|uvIndex", full.list.of.features)]
 #full.list.of.features = full.list.of.features[-grep("^Loads|time|weekday|icon|windBearing.[0-9]+$|day.of.week|sine.day.of.week|cosine.day.of.week|day.of.year|cosine.day.of.year|sine.day.of.year|temperature", full.list.of.features)]
-full.list.of.features = full.list.of.features[-grep("^Loads|time|weekday|icon|^day.of.week$|^day.of.year$|yesterday.weather.measures.day.of.week|yesterday.weather.measures.day.of.year|temperature|windBearing.[0-9]+$", full.list.of.features)]
+full.list.of.features = full.list.of.features[-grep("^Loads|time|weekday|icon|^day.of.week$|^day.of.year$|yesterday.weather.measures.isQuietHour|yesterday.weather.measures.isHoliday|yesterday.weather.measures.isWeekend|yesterday.weather.measures.day.of.week|yesterday.weather.measures.sine.day.of.week|yesterday.weather.measures.cosine.day.of.week|yesterday.weather.measures.day.of.year|yesterday.weather.measures.cosine.day.of.year|yesterday.weather.measures.sine.day.of.year|temperature|windBearing.[0-9]+$", full.list.of.features)]
 
 
-full.list.of.FeaturesVariables = 
-  subset(final.Data.Set, select = grep(paste(full.list.of.features, collapse = "|"), names(final.Data.Set)))
+full.list.of.FeaturesVariables = final.Data.Set[full.list.of.features]
 
 
-trainSet =
-  subset(trainSet, select = grep(paste(full.list.of.features, collapse = "|"), names(trainSet)))
+trainSet = trainSet[full.list.of.features]
 
 
-evaluationSet =
-  subset(evaluationSet, select = grep(paste(full.list.of.features, collapse = "|"), names(evaluationSet)))
+evaluationSet = evaluationSet[full.list.of.features]
 
 
-train.and.evalSet =
-  subset(train.and.evalSet, select = grep(paste(full.list.of.features, collapse = "|"), names(train.and.evalSet)))
+train.and.evalSet = train.and.evalSet[full.list.of.features]
 
 
-testSet =
-  subset(testSet, select = grep(paste(full.list.of.features, collapse = "|"), names(testSet)))
+testSet = testSet[full.list.of.features]
 
 
 #create the predictor.df data.frame for predictions####
