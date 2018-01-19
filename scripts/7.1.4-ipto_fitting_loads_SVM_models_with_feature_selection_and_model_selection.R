@@ -16,38 +16,36 @@ len = dim(final.Data.Set)[1]
 
 #trainPart = floor(split * dim(final.Data.Set)[1])
 trainSet = final.Data.Set[1:(len - splitTestSet), ]
-evaluationSet = final.Data.Set[(len-splitTestSet + 1):(len - splitEvalSet), ]
+evaluationSet = final.Data.Set[(len - splitTestSet + 1):(len - splitEvalSet), ]
 train.and.evalSet = final.Data.Set[1:(len - splitEvalSet), ]
 testSet = final.Data.Set[(len - splitEvalSet + 1):len, ]
 
 ####create the train, evaluation and test Set###################################
 
 full.list.of.features = names(final.Data.Set)
-full.list.of.features = full.list.of.features[-grep("^Loads|time|weekday|icon|^day.of.week$|^day.of.year$|yesterday.weather.measures.day.of.week|yesterday.weather.measures.day.of.year|temperature|windBearing.[0-9]+$", full.list.of.features)]
+full.list.of.features = full.list.of.features[-grep("^Loads|time|weekday|icon|^day.of.week$|^day.of.year$|yesterday.weather.measures.isQuietHour|yesterday.weather.measures.isHoliday|yesterday.weather.measures.isWeekend|yesterday.weather.measures.day.of.week|yesterday.weather.measures.sine.day.of.week|yesterday.weather.measures.cosine.day.of.week|yesterday.weather.measures.day.of.year|yesterday.weather.measures.cosine.day.of.year|yesterday.weather.measures.sine.day.of.year|temperature|windBearing.[0-9]+$", full.list.of.features)]
 
 
-trainSet =
-  subset(trainSet, select = grep(paste(full.list.of.features, collapse = "|"), names(trainSet)))
+full.list.of.FeaturesVariables = final.Data.Set[full.list.of.features]
 
 
-evaluationSet =
-  subset(evaluationSet, select = grep(paste(full.list.of.features, collapse = "|"), names(evaluationSet)))
+trainSet = trainSet[full.list.of.features]
 
 
-train.and.evalSet =
-  subset(train.and.evalSet, select = grep(paste(full.list.of.features, collapse = "|"), names(train.and.evalSet)))
+evaluationSet = evaluationSet[full.list.of.features]
 
 
-testSet =
-  subset(testSet, select = grep(paste(full.list.of.features, collapse = "|"), names(testSet)))
+train.and.evalSet = train.and.evalSet[full.list.of.features]
 
+
+testSet = testSet[full.list.of.features]
 
 #create the lists which store the best parameters######################################
 
 #if (!exists("best.svm.parameters.fs")) {
-  best.svm.parameters.fs = list()
-  best.svm.fit.fs = list()
-  best.svm.prediction.fs = list()
+best.svm.parameters.fs = list()
+best.svm.fit.fs = list()
+best.svm.prediction.fs = list()
 #}
 
 
@@ -56,8 +54,8 @@ for(i in 1:24) {
   
   assign(paste("min.mape.", i-1, sep=""), 1000000)
   
-  gammaValues = 5 *  10 ^(-6:-3) #10^(-4) #
-  costValues = 2 ^ (2:14) #(6)
+  gammaValues = 5 *  10 ^(-5:-4) #10^(-4) #
+  costValues = 2 ^ (2:11) #(6)
   
   
   for(gammaValue in gammaValues) {
@@ -105,8 +103,8 @@ for(i in 1:24) {
       
       #make the prediction
       assign(paste("prediction.svm", i-1, sep="."), predict(get(paste("fit.svm",i-1,sep=".")), predictor.df))
-  
-    
+      
+      
       #calculate mape
       temp.mape = 100 * mean(unlist(abs((get("evaluationSet")[paste("Loads", i-1, sep=".")] - get(paste("prediction.svm", i-1, sep=".")))/get("evaluationSet")[paste("Loads", i-1, sep=".")])))
       cat("mape = ", temp.mape,"\n\n")
@@ -220,7 +218,7 @@ rmse.svm.fs.ms = list()
 mse.svm.fs.ms = list()
 prediction.svm.fs.ms = list()
 fit.svm.fs.ms = list()
-  
+
 
 for(i in 1:24) {
   
@@ -319,8 +317,8 @@ cat("mean svm mape: ", round(mean.mape.svm.fs.ms,3), "\n")
 cat("mean svm mae: ", round(mean.mae.svm.fs.ms,5), "\n")
 cat("mean svm mse: ", round(mean.mse.svm.fs.ms,5), "\n")
 cat("mean svm rmse: ", round(mean.rmse.svm.fs.ms,5), "\n")
-  
-  
+
+
 cat("elapsed time in minutes: ", (proc.time()[3] - startTime)/60,"\n")
 
 

@@ -10,33 +10,36 @@ splitEvalSet = 365
 splitTestSet = splitEvalSet + 365
 len = dim(final.Data.Set)[1]
 
+#creating the train and test set splits#################
+splitEvalSet = 365
+splitTestSet = splitEvalSet + 365
+len = dim(final.Data.Set)[1]
+
 #trainPart = floor(split * dim(final.Data.Set)[1])
 trainSet = final.Data.Set[1:(len - splitTestSet), ]
-evaluationSet = final.Data.Set[(len-splitTestSet + 1):(len - splitEvalSet), ]
+evaluationSet = final.Data.Set[(len - splitTestSet + 1):(len - splitEvalSet), ]
 train.and.evalSet = final.Data.Set[1:(len - splitEvalSet), ]
 testSet = final.Data.Set[(len - splitEvalSet + 1):len, ]
 
 ####create the train, evaluation and test Set###################################
 
 full.list.of.features = names(final.Data.Set)
-full.list.of.features = full.list.of.features[-grep("^Loads|time|weekday|icon|^day.of.week$|^day.of.year$|yesterday.weather.measures.day.of.week|yesterday.weather.measures.day.of.year|temperature|windBearing.[0-9]+$", full.list.of.features)]
+full.list.of.features = full.list.of.features[-grep("^Loads|time|weekday|icon|^day.of.week$|^day.of.year$|yesterday.weather.measures.isQuietHour|yesterday.weather.measures.isHoliday|yesterday.weather.measures.isWeekend|yesterday.weather.measures.day.of.week|yesterday.weather.measures.sine.day.of.week|yesterday.weather.measures.cosine.day.of.week|yesterday.weather.measures.day.of.year|yesterday.weather.measures.cosine.day.of.year|yesterday.weather.measures.sine.day.of.year|temperature|windBearing.[0-9]+$", full.list.of.features)]
 
 
-trainSet =
-  subset(trainSet, select = grep(paste(full.list.of.features, collapse = "|"), names(trainSet)))
+full.list.of.FeaturesVariables = final.Data.Set[full.list.of.features]
 
 
-evaluationSet =
-  subset(evaluationSet, select = grep(paste(full.list.of.features, collapse = "|"), names(evaluationSet)))
+trainSet = trainSet[full.list.of.features]
 
 
-train.and.evalSet =
-  subset(train.and.evalSet, select = grep(paste(full.list.of.features, collapse = "|"), names(train.and.evalSet)))
+evaluationSet = evaluationSet[full.list.of.features]
 
 
-testSet =
-  subset(testSet, select = grep(paste(full.list.of.features, collapse = "|"), names(testSet)))
+train.and.evalSet = train.and.evalSet[full.list.of.features]
 
+
+testSet = testSet[full.list.of.features]
 
 #create the lists which store the best parameters######################################
 
