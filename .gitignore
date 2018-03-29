@@ -3,3 +3,6 @@
 .RData
 .Ruserdata
 .Rproj
+xgboost.model
+gui
+selectedFeatures.csv
