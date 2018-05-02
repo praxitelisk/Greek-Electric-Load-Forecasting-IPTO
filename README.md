@@ -4,6 +4,7 @@
 <ul>
 <img src = "https://img.shields.io/badge/license-MIT-blue.svg" />
 <img src="https://img.shields.io/badge/status%3A-version%202%20%2F%20experimenting%20%2F%20studying%20%2F%20improving-green.svg" />
+<img src="https://img.shields.io/badge/current%20active%20branch-development--4-lightgrey.svg" />
 </ul>
 
 This repo contains the code for my postgraduate thesis dealing with Short-term Load Forecasting, predicting the electric load demand per hour in Greece, developed in R, RStudio, R-markdown and R-Shiny using daily load datasets provided by the Greek Independent Power Transmission Operator (I.P.T.O.) - (AΔΜHΕ in greek) http://www.admie.gr/nc/en/home/ <br>
