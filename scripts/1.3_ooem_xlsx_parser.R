@@ -2,7 +2,13 @@
 #Parsing the xlsx ooem prediction files to get the predictied loads from ooem--------
 #####################################################################################
 
-library("xlsx")
+#load or even install required libraries
+if (!("xlsx" %in% rownames(installed.packages()))) {
+  install.packages("xlsx")
+  library("xlsx")
+} else {
+  library("xlsx")
+}
 
 
 startTime <- proc.time()[3]
